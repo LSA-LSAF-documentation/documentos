@@ -29,13 +29,24 @@
             padding: 40px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .header-title img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
         h1 {
             font-family: 'Oswald', sans-serif;
             font-size: 32pt;
             color: #1f4b6e;
             border-left: 6px solid #c4a747;
             padding-left: 20px;
-            margin-bottom: 10px;
+            margin: 0;
         }
         .subtitle {
             color: #5a7d9a;
@@ -110,7 +121,10 @@
 </head>
 <body>
 <div class="container">
-    <h1>📡 ATC · DOCUMENTACIÓN OFICIAL</h1>
+    <div class="header-title">
+        <img src="https://i.imgur.com/GfmYqNX.png" alt="Logo ATC">
+        <h1>ATC · DOCUMENTACIÓN OFICIAL</h1>
+    </div>
     <div class="subtitle">Fuerza Aérea · Material de referencia autorizado</div>
     
     <ul class="document-list">
@@ -125,7 +139,7 @@
             </a>
         </li>
 
-        <!-- DOCUMENTO 1: FLOTA -->
+        <!-- DOCUMENTO 2: FLOTA -->
         <li>
             <a href="flota.html">
                 <div class="doc-icon">✈️</div>
@@ -136,7 +150,7 @@
             </a>
         </li>
         
-        <!-- DOCUMENTO 2: COMUNICACIONES ATC -->
+        <!-- DOCUMENTO 3: COMUNICACIONES ATC -->
         <li>
             <a href="comunicaciones-atc.html">
                 <div class="doc-icon">📻</div>
