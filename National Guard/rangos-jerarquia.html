@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardia Nacional · Rangos e insignias</title>
+  <style>
+    /* RESET + FUENTES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #4a5e4a;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 10px;
+    }
+
+    .manual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+    /* página A4 con altura mínima para pantalla, pero en impresión será fija */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fcf9ed;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 2px #b4945a, 0 0 0 6px #3f6140;
+      border-radius: 4px;
+      position: relative;
+      padding: 15mm 15mm 10mm 15mm;
+      display: flex;
+      flex-direction: column;
+      page-break-after: always;
+      break-inside: avoid;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path fill="%233b5e3b" d="M50 8 L61 38 L93 38 L67 56 L77 87 L50 70 L23 87 L33 56 L7 38 L39 38 Z" /></svg>');
+      background-repeat: repeat;
+      background-size: 60px 60px;
+      background-attachment: scroll;
+    }
+
+    .page-content {
+      flex: 1 0 auto;
+    }
+
+    /* cabecera con logos */
+    .page-header-logos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5mm;
+      border-bottom: 2px solid #c9a458;
+      padding-bottom: 3mm;
+    }
+    .logo-lsaf, .logo-gn {
+      height: 45px;
+      width: auto;
+    }
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16pt;
+      color: #3f6140;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    /* pie de página */
+    .page-footer {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      border-top: 1px dashed #c9a458;
+      padding-top: 4px;
+      font-family: 'Oswald', sans-serif;
+      color: #7c8f6a;
+      font-size: 10pt;
+    }
+    .footer-note {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .page-number {
+      font-weight: 600;
+      color: #5a7342;
+    }
+
+    /* títulos de sección */
+    .seccion-titulo {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 22pt;
+      text-transform: uppercase;
+      color: #2d512d;
+      border-left: 10px solid #c9a458;
+      padding-left: 10px;
+      margin: 6mm 0 4mm 0;
+      border-bottom: 1px solid #b8963c;
+      padding-bottom: 3px;
+    }
+
+    /* badges genéricos */
+    .badge {
+      background: #2d4b2d;
+      color: #f0e2b0;
+      font-size: 10pt;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* lista estilo militar (grid) */
+    .lista-militar {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 3mm;
+      margin: 4mm 0;
+    }
+    .lista-militar li {
+      background: #e7ebdd;
+      border: 1px solid #8faa6e;
+      padding: 3mm 4mm;
+      font-weight: 500;
+      color: #1d3a1d;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 1px 1px 0 #768d5c;
+      font-size: 11pt;
+    }
+    .lista-militar li::before {
+      content: "★";
+      color: #c9a458;
+      font-size: 14pt;
+      margin-right: 5px;
+    }
+
+    /* estilos específicos para rangos */
+    .rango-item {
+      margin: 4mm 0 6mm 0;
+    }
+    .rango-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2mm;
+    }
+    .rango-imagen {
+      height: 50px;
+      width: auto;
+      object-fit: contain;
+      background: #f0ebd0;
+      border: 2px solid #b8963c;
+      border-radius: 6px;
+      padding: 3px;
+    }
+    .rango-titulo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22pt;
+      font-weight: 600;
+      color: #1f3f1f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rango-titulo .emoji {
+      font-size: 28pt;
+    }
+    .rango-funciones {
+      background: rgba(201, 164, 88, 0.1);
+      padding: 3mm 5mm;
+      border-radius: 6px;
+      margin-left: 0;
+      border-left: 4px solid #b68b3c;
+    }
+    .lista-simple {
+      list-style: none;
+      padding-left: 2mm;
+    }
+    .lista-simple li {
+      margin: 1mm 0;
+      font-size: 11.5pt;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .lista-simple li::before {
+      content: "⚔️";
+      color: #7e642e;
+      font-size: 9pt;
+      margin-right: 5px;
+    }
+    .sin-insignia {
+      height: 50px;
+      width: 50px;
+      background: #cfcfc0;
+      border: 2px dashed #7e642e;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8pt;
+      color: #2d4b2d;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .tabla-autoridad {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 4mm 0;
+      background: #efebd5;
+      border: 2px solid #7b965b;
+    }
+    .tabla-autoridad th {
+      background: #3f6140;
+      color: #fcf0c0;
+      padding: 3mm;
+      font-family: Oswald;
+      font-weight: 400;
+      font-size: 12pt;
+      border: 1px solid #c9a458;
+    }
+    .tabla-autoridad td {
+      border: 1px solid #9baf7a;
+      padding: 2.5mm;
+      font-size: 11pt;
+    }
+    .doble-columna {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+      margin: 3mm 0;
+    }
+    .subapartado {
+      margin-top: 3mm;
+      margin-bottom: 2mm;
+    }
+    .subapartado h4 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16pt;
+      color: #2d512d;
+      margin-bottom: 1mm;
+      border-left: 3px solid #c9a458;
+      padding-left: 6px;
+    }
+    .clausula-final {
+      margin-top: 4mm;
+      padding-top: 2mm;
+      border-top: 1px dashed #b8963c;
+      font-style: italic;
+      background: #f7f3e2;
+      padding: 2mm 4mm;
+      border-radius: 6px;
+    }
+
+    /* portada (logos grandes) */
+    .portada-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15mm;
+      margin: 0 0 10mm 0;
+    }
+    .portada-logos img {
+      height: 75px;
+      width: auto;
+    }
+
+    /* ajustes para impresión: fondo completo */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+      .page {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin: 0;
+        page-break-after: always;
+        height: 297mm;
+        min-height: 0;
+        overflow: visible;
+        background-repeat: repeat;
+        background-attachment: scroll;
+      }
+      .page-content {
+        overflow: visible;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="manual">
+
+  <!-- PÁGINA 1 · PORTADA (logos grandes) -->
+  <div class="page">
+    <div class="portada-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional">
+    </div>
+    <div class="page-content" style="text-align: center;">
+      <h1 style="font-family: Oswald; font-size: 36pt; margin: 2mm 0; color: #1e3a1e;">GUARDIA NACIONAL</h1>
+      <h2 style="font-family: Oswald; font-weight: 400; font-size: 24pt; color: #b68b3c;">SISTEMA DE RANGOS</h2>
+      <h2 style="font-family: Oswald; font-weight: 300; font-size: 18pt; color: #4e6b3e;">Y JERARQUÍA</h2>
+      <div style="height: 2px; background: #c9a458; width: 70%; margin: 8mm auto;"></div>
+      <div style="margin-top: 10mm;">
+        <span class="badge" style="font-size: 14pt; padding: 4px 12px;">DOCUMENTO OFICIAL</span>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Los Santos Armed Forces · Jerarquía</span>
+      <span class="page-number">1</span>
+    </div>
+  </div>
+
+  <!-- ==================== PRINCIPIOS DE LA JERARQUÍA (PÁGINAS 2 y 3) ==================== -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Principios de la Jerarquía</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">I. PRINCIPIOS DE LA JERARQUÍA</div>
+      <p style="margin-bottom: 3mm;">Los principios de la jerarquía establecen las bases estructurales que rigen la organización, autoridad y funcionamiento de la Guardia Nacional. Su cumplimiento garantiza orden, disciplina y eficacia operativa en todas las situaciones.</p>
+
+      <div class="subapartado">
+        <h4>1. Cadena de Mando Estricta</h4>
+        <p>La Guardia Nacional opera bajo un sistema de cadena de mando claramente definido, en el cual cada miembro responde directamente a un superior inmediato.</p>
+        <p>Esto implica:</p>
+        <ul class="lista-simple"><li>Toda orden debe seguir una línea jerárquica establecida</li><li>Ningún miembro puede omitir o ignorar a su superior directo</li><li>Las decisiones se transmiten de forma descendente (de mayor a menor rango)</li><li>Los reportes se transmiten de forma ascendente (de menor a mayor rango)</li></ul>
+        <p>La cadena de mando permite:</p>
+        <ul class="lista-simple"><li>Control total de las operaciones</li><li>Organización estructurada</li><li>Reducción de errores por desorden</li></ul>
+        <p>El incumplimiento de este principio constituye una falta grave, ya que compromete la integridad operativa de la unidad.</p>
+      </div>
+
+      <div class="subapartado">
+        <h4>2. Autoridad Progresiva</h4>
+        <p>La autoridad dentro de la Guardia Nacional se otorga de manera progresiva según el rango, incrementando responsabilidades y capacidad de toma de decisiones.</p>
+        <p>Esto significa:</p>
+        <ul class="lista-simple"><li>A mayor rango, mayor nivel de autoridad y responsabilidad</li><li>Cada rango posee límites definidos de mando</li><li>La autoridad no es absoluta, sino regulada</li></ul>
+        <p>La autoridad progresiva garantiza:</p>
+        <ul class="lista-simple"><li>Distribución equilibrada del poder</li><li>Control jerárquico adecuado</li><li>Evitar abusos o decisiones no autorizadas</li></ul>
+        <p>Ningún miembro podrá ejercer autoridad fuera de los límites establecidos por su rango.</p>
+      </div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Base estructural de la jerarquía</span><span class="page-number">2</span></div>
+  </div>
+
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Principios de la Jerarquía (II)</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="subapartado">
+        <h4>3. Especialización por Unidades</h4>
+        <p>La estructura jerárquica se complementa con la asignación de personal a unidades especializadas, cada una con funciones específicas.</p>
+        <p>Esto implica:</p>
+        <ul class="lista-simple"><li>Distribución del personal según capacidades y necesidades</li><li>Liderazgo interno dentro de cada unidad</li><li>Adaptación de funciones según el tipo de operación</li></ul>
+        <p>Cada unidad (RCU, ERU, SSU, LOG):</p>
+        <ul class="lista-simple"><li>Posee su propia estructura interna</li><li>Responde a la jerarquía general</li><li>Opera bajo un mando designado</li></ul>
+        <p>La especialización permite:</p>
+        <ul class="lista-simple"><li>Mayor eficiencia operativa</li><li>Respuesta adecuada a distintos escenarios</li><li>Optimización de recursos humanos y tácticos</li></ul>
+      </div>
+
+      <div class="subapartado">
+        <h4>4. Responsabilidad Operativa</h4>
+        <p>Todo rango dentro de la Guardia Nacional conlleva una responsabilidad directa sobre las acciones ejecutadas.</p>
+        <p>Esto incluye:</p>
+        <ul class="lista-simple"><li>Responsabilidad sobre órdenes emitidas</li><li>Responsabilidad sobre personal bajo mando</li><li>Responsabilidad sobre decisiones en campo</li></ul>
+        <p>Principios clave:</p>
+        <ul class="lista-simple"><li>Toda orden debe ser clara, legal y ejecutable</li><li>El superior responde por las acciones de su unidad</li><li>El subordinado responde por el cumplimiento de la orden</li></ul>
+        <p>La responsabilidad operativa garantiza:</p>
+        <ul class="lista-simple"><li>Control disciplinario</li><li>Toma de decisiones consciente</li><li>Evaluación posterior de acciones</li></ul>
+      </div>
+      <div class="clausula-final"><strong>Resumen</strong><br>Los principios de la jerarquía constituyen la base del orden institucional de la Guardia Nacional. Su aplicación es obligatoria y permanente, siendo esenciales para mantener la disciplina, la eficiencia y la correcta ejecución de todas las operaciones.</div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Obligatoriedad permanente</span><span class="page-number">3</span></div>
+  </div>
+
+  <!-- PÁGINA 4 · ESTRUCTURA GENERAL + ALTO MANDO -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Estructura General</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">II. ESTRUCTURA GENERAL</div>
+      <p style="font-size: 14pt; margin: 2mm 0;">4 niveles jerárquicos:</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 5mm; justify-content: center;">
+        <span class="badge" style="background:#a04040; font-size: 12pt;">Alto Mando</span>
+        <span class="badge" style="background:#b95f23; font-size: 12pt;">Oficiales</span>
+        <span class="badge" style="background:#2f6f8f; font-size: 12pt;">Suboficiales</span>
+        <span class="badge" style="background:#5f7352; font-size: 12pt;">Tropa</span>
+      </div>
+      <div class="seccion-titulo" style="margin-top: 10mm;">III. ALTO MANDO</div>
+      <div class="rango-item">
+        <div class="rango-header"><img src="https://i.imgur.com/mmBojZc.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔴</span> General de División</span></div>
+        <div class="rango-funciones"><p><strong>Máxima autoridad de la Guardia Nacional</strong></p><ul class="lista-simple"><li>Dirigir toda la Guardia Nacional</li><li>Autorizar despliegues grandes</li><li>Coordinar con LSAF y Air Force</li><li>Tomar decisiones críticas</li></ul></div>
+      </div>
+      <div class="rango-item">
+        <div class="rango-header"><img src="https://i.imgur.com/22593Jq.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔴</span> Coronel</span></div>
+        <div class="rango-funciones"><p><strong>Segundo al mando</strong></p><ul class="lista-simple"><li>Supervisar todas las unidades</li><li>Ejecutar órdenes del General</li><li>Coordinar operaciones grandes</li></ul></div>
+      </div>
+      <div style="margin-top: 5mm; font-style: italic;">“La autoridad se ejerce con disciplina y ejemplo”</div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Alto Mando</span><span class="page-number">4</span></div>
+  </div>
+
+  <!-- PÁGINA 5 · OFICIALES -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Oficiales</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content"><div class="seccion-titulo">IV. OFICIALES</div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/zvRlV70.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Teniente Coronel</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Control operativo de divisiones</li><li>Supervisión de comandantes de unidad</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/aYjrwzn.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Mayor</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Dirigir unidades específicas (RCU, ERU, etc.)</li><li>Planificar operaciones</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/cwOGp1i.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Capitán</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Liderar equipos en campo</li><li>Ejecutar misiones</li><li>Supervisar suboficiales</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/7oQ8NiO.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Teniente</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Segundo al mando en operaciones</li><li>Apoyo directo al Capitán</li></ul></div></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Oficiales · mando táctico</span><span class="page-number">5</span></div>
+  </div>
+
+  <!-- PÁGINA 6 · SUBOFICIALES -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Suboficiales</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content"><div class="seccion-titulo">V. SUBOFICIALES</div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/mzOkSdk.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔵</span> Sargento Primero</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Liderar escuadras</li><li>Control disciplinario</li><li>Entrenamiento de tropas</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/JwrHYiC.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔵</span> Sargento</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Supervisión directa de soldados</li><li>Ejecución de órdenes tácticas</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/R55E5z5.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔵</span> Cabo</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Apoyo a sargentos</li><li>Liderazgo básico en campo</li></ul></div></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Suboficiales · columna vertebral</span><span class="page-number">6</span></div>
+  </div>
+
+  <!-- PÁGINA 7 · TROPA + RAMAS ESPECIALIZADAS -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Tropa y especialidades</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content"><div class="seccion-titulo">VI. TROPA</div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/3TRuAet.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">⚪</span> Soldado</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Cumplir órdenes</li><li>Participar en operaciones</li><li>Base operativa</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><div class="sin-insignia">SIN INSIGNIA</div><span class="rango-titulo"><span class="emoji">⚪</span> Recluta</span></div><div class="rango-funciones"><ul class="lista-simple"><li>Formación</li><li>Entrenamiento</li><li>Sin autoridad operativa</li></ul></div></div>
+      <div class="seccion-titulo">VII. RAMAS ESPECIALIZADAS</div>
+      <div class="doble-columna"><div style="background:#eef2e2; padding:3mm;"><span class="badge">RCU</span> Riot Control: disturbios, escudos, control de masas.</div><div style="background:#eef2e2; padding:3mm;"><span class="badge">ERU</span> Emergencias: rescate, apoyo médico.</div><div style="background:#eef2e2; padding:3mm;"><span class="badge">SSU</span> Seguridad: instalaciones, control de accesos.</div><div style="background:#eef2e2; padding:3mm;"><span class="badge">LOG</span> Logística: transporte, suministros.</div></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Tropa y especialidades</span><span class="page-number">7</span></div>
+  </div>
+
+  <!-- PÁGINA 8 · CADENA DE MANDO + ASCENSOS -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Cadena y ascensos</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content"><div class="seccion-titulo">VIII. CADENA DE MANDO</div><div style="background:#3f6140; color:#f0eac0; padding:4mm; border-radius:6px; text-align:center; font-size:16pt; margin-bottom:5mm;">👉 Nadie puede saltarse rangos</div><p style="font-size:14pt;">Ejemplo: Soldado → Cabo → Sargento → Oficial</p><div class="seccion-titulo">IX. SISTEMA DE ASCENSOS</div><p><strong>Requisitos generales:</strong> tiempo en servicio, actividad, disciplina, evaluación de superiores.</p><div style="margin:4mm 0;"><p><span style="color:#3f6140; font-weight:bold;">🔹 Ordinario</span> · Por mérito y tiempo</p><p><span style="color:#b88639; font-weight:bold;">🔹 Extraordinario</span> · Por acción destacada</p><p><span style="color:#3f6b8f; font-weight:bold;">🔹 Administrativo</span> · Por necesidad de la facción</p></div></div>
+    <div class="page-footer"><span class="footer-note">Ascensos y cadena</span><span class="page-number">8</span></div>
+  </div>
+
+  <!-- PÁGINA 9 · TABLAS DE AUTORIDAD -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Tablas de autoridad</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content"><div class="seccion-titulo">X. AUTORIDAD POR RANGO</div><p style="font-weight:bold;">Uso de fuerza · Nivel de decisión</p>
+      <table class="tabla-autoridad"><thead><tr><th>Rango</th><th>Nivel de decisión</th></tr></thead><tbody><tr><td>General</td><td>Total</td></tr><tr><td>Coronel</td><td>Alto</td></tr><tr><td>Mayor</td><td>Medio-Alto</td></tr><tr><td>Capitán</td><td>Medio</td></tr><tr><td>Teniente</td><td>Medio</td></tr><tr><td>Sargento</td><td>Bajo</td></tr><tr><td>Soldado</td><td>Ninguno</td></tr></tbody></table>
+      <p style="font-weight:bold; margin-top:5mm;">Activación de unidades</p>
+      <table class="tabla-autoridad"><thead><tr><th>Rango</th><th>Puede activar</th></tr></thead><tbody><tr><td>General</td><td>Todo</td></tr><tr><td>Coronel</td><td>Todo</td></tr><tr><td>Mayor</td><td>Unidad propia</td></tr><tr><td>Capitán</td><td>Equipo</td></tr><tr><td>Sargento</td><td>No</td></tr></tbody></table>
+    </div>
+    <div class="page-footer"><span class="footer-note">Tablas de autoridad</span><span class="page-number">9</span></div>
+  </div>
+
+  <!-- PÁGINA 10 · ROLES CLAVE + IDENTIFICACIÓN (X y XI) -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Roles e identificación</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content"><div class="seccion-titulo">XI. ROLES CLAVE</div><div style="background:#f0e9d0; padding:3mm; border-left:6px solid #c9a458;"><p><span style="color:#a15317;">🔥 Comandante de Unidad</span> (Mayor/Capitán) · Responsable total de su división.</p><p><span style="color:#a15317;">🔥 Oficial de Operaciones</span> · Planifica eventos, coordina despliegues.</p><p><span style="color:#a15317;">🔥 Instructor</span> · Entrena reclutas, evalúa rendimiento.</p></div><div class="seccion-titulo">XII. IDENTIFICACIÓN</div><p>Ejemplo: GN-001 → General · GN-245 → Soldado</p><p>Uso: radio, reportes, documentos.</p></div>
+    <div class="page-footer"><span class="footer-note">Roles y códigos</span><span class="page-number">10</span></div>
+  </div>
+
+  <!-- ==================== NUEVA SECCIÓN: NORMAS DE RESPETO (PÁGINAS 11 y 12) ==================== -->
+  <!-- PÁGINA 11 · NORMAS DE RESPETO (Parte 1) -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Normas de Respeto (I)</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="seccion-titulo">XIII. NORMAS DE RESPETO</div>
+      <p>Las normas de respeto constituyen un conjunto de disposiciones obligatorias destinadas a preservar la disciplina, la autoridad y el orden dentro de la Guardia Nacional. Su cumplimiento es esencial para el correcto funcionamiento de la estructura jerárquica.</p>
+
+      <div class="subapartado"><h4>1. Saludo Militar a Superiores</h4>
+        <p>El saludo militar es una manifestación formal de respeto hacia la jerarquía, la autoridad y la institución.</p>
+        <p><strong>1.1 Obligación</strong><br>Todo miembro deberá ejecutar el saludo militar al dirigirse a un superior jerárquico, así como en las siguientes situaciones:</p>
+        <ul class="lista-simple"><li>Al iniciar comunicación directa</li><li>Al presentarse ante un superior</li><li>Al recibir o finalizar una orden</li><li>Durante formaciones o actos oficiales</li></ul>
+        <p><strong>1.2 Forma de ejecución</strong><br>El saludo deberá realizarse de manera: correcta, visible, oportuna. Debe reflejar disciplina, respeto y profesionalismo.</p>
+        <p><strong>1.3 Consideraciones</strong><br>El saludo no es opcional. Su omisión injustificada constituye falta disciplinaria. Debe mantenerse incluso en situaciones operativas, siempre que las condiciones lo permitan.</p>
+        <p><strong>1.4 Respuesta del superior</strong><br>El superior está obligado a reconocer el saludo, mantener la formalidad correspondiente y actuar conforme a su rango.</p>
+      </div>
+
+      <div class="subapartado"><h4>2. Uso Correcto de Rangos</h4>
+        <p>El uso adecuado de los rangos es fundamental para mantener el orden jerárquico y la claridad en la comunicación.</p>
+        <p><strong>2.1 Identificación</strong><br>Todo miembro deberá reconocer los rangos superiores e inferiores, dirigirse correctamente según la jerarquía y mantener el trato formal correspondiente.</p>
+        <p><strong>2.2 Forma de dirigirse</strong><br>Al comunicarse, se deberá utilizar el rango del superior (Ej: “Mi Capitán”, “Mi Sargento”), evitar el uso de nombres sin rango en contexto formal y mantener tono respetuoso y profesional.</p>
+        <p><strong>2.3 Prohibiciones</strong><br>Queda estrictamente prohibido ignorar rangos superiores, dirigirse de forma irrespetuosa o utilizar términos informales en situaciones de servicio.</p>
+        <p><strong>2.4 Importancia operativa</strong><br>El uso correcto de rangos permite identificación inmediata de autoridad, fluidez en la comunicación y organización en situaciones críticas.</p>
+      </div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Disciplina y jerarquía</span><span class="page-number">11</span></div>
+  </div>
+
+  <!-- PÁGINA 12 · NORMAS DE RESPETO (Parte 2) -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">Normas de Respeto (II)</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="subapartado"><h4>3. Obediencia Inmediata</h4>
+        <p>La obediencia es un principio fundamental que garantiza la ejecución efectiva de órdenes dentro de la estructura militar.</p>
+        <p><strong>3.1 Obligación</strong><br>Toda orden emitida por un superior deberá ser acatada de forma inmediata, ejecutada sin demora y cumplida conforme a lo indicado.</p>
+        <p><strong>3.2 Alcance</strong><br>La obediencia aplica a órdenes directas, instrucciones operativas y disposiciones disciplinarias.</p>
+        <p><strong>3.3 Límites</strong><br>La obediencia se rige por los siguientes criterios: la orden debe ser clara, debe provenir de un superior jerárquico y debe estar dentro del marco operativo establecido.</p>
+        <p><strong>3.4 Incumplimiento</strong><br>Se considerará falta grave negarse a cumplir una orden, retrasar su ejecución sin justificación o cuestionar la orden en el momento de ejecución.</p>
+        <p><strong>3.5 Conducta posterior</strong><br>Si existiera desacuerdo con una orden, deberá cumplirse primero y podrá ser reportada posteriormente por los canales correspondientes.</p>
+      </div>
+      <div class="clausula-final"><strong>Resumen</strong><br>Las normas de respeto son de cumplimiento obligatorio y permanente. Su correcta aplicación garantiza la disciplina, el orden y el funcionamiento efectivo de la Guardia Nacional, siendo responsabilidad de cada miembro mantener y reforzar estos principios en todo momento.</div>
+    </div>
+    <div class="page-footer"><span class="footer-note">Obediencia y respeto</span><span class="page-number">12</span></div>
+  </div>
+
+  <!-- PÁGINA 13 · REGLA DE ORO -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 10mm;"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf" style="height:45px;"><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn" style="height:45px;"></div>
+    <div class="page-content" style="text-align: center;"><div style="font-size:30pt; font-family:Oswald; color:#3f6140; margin-top:15mm;">★ ★ ★</div><p style="font-size:28pt; font-family:Oswald; margin:10mm 0; color:#1d4a1d;">XIV. REGLA DE ORO</p><p style="font-size:22pt; font-family:Oswald; background:#c9a45820; padding:10mm; border:4px double #c9a458; max-width:140mm; margin:0 auto;">“La jerarquía no es privilegio,<br> es responsabilidad.”</p><div style="margin-top:20mm;"><p style="font-size:12pt;">Guardia Nacional · Los Santos Armed Forces</p></div></div>
+    <div class="page-footer"><span class="footer-note">Lealtad · Disciplina · Honor</span><span class="page-number">13</span></div>
+  </div>
+
+  <!-- PÁGINA 14 · JURAMENTO Y FIRMA -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 10mm;"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf" style="height:45px;"><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn" style="height:45px;"></div>
+    <div class="page-content"><div style="text-align: center; margin-top: 15mm;"><div style="font-size:30pt; font-family:Oswald; color:#3f6140;">★ ★ ★</div><p style="font-size:20pt; font-family:Oswald; margin:8mm 0; color:#2d4b2d;">GUARDIA NACIONAL</p><p style="font-size:14pt; max-width:120mm; margin:0 auto;">"Juro defender la Constitución, servir al pueblo y actuar con honor, dentro y fuera del campo de batalla."</p><div style="border:2px solid #c9a458; width:70mm; margin:15mm auto; padding:6mm 4mm; text-align:center; background-color:#fef9ea; border-radius:4px;"><p style="font-family:Oswald; font-size:12pt; margin-bottom:4mm; color:#3f6140;">Alto Mando LSAF</p><div style="margin:3mm 0;"><img src="https://i.imgur.com/gyQC992.png" alt="Firma" style="max-width:50mm; height:auto; display:block; margin:0 auto;"></div><p style="font-family:'Oswald'; font-size:12pt; font-weight:600; margin:4mm 0 2mm 0;">David Toro Coronel</p></div><p style="margin-top:10mm; font-size:10pt;">Este manual es de conocimiento obligatorio para todo miembro activo.</p></div></div>
+    <div class="page-footer"><span class="footer-note">Edición revisada · Los Santos Armed Forces</span><span class="page-number">14</span></div>
+  </div>
+
+</div>
+</body>
+</html>

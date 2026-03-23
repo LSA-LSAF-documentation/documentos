@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardia Nacional · Integración con Air Force</title>
+  <style>
+    /* RESET + FUENTES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #4a5e4a;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 10px;
+    }
+
+    .manual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+    /* cada página A4 */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fcf9ed;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 2px #b4945a, 0 0 0 6px #3f6140;
+      border-radius: 4px;
+      padding: 15mm 15mm 10mm 15mm;
+      display: flex;
+      flex-direction: column;
+      page-break-after: always;
+      break-inside: avoid;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path fill="%233b5e3b" d="M50 8 L61 38 L93 38 L67 56 L77 87 L50 70 L23 87 L33 56 L7 38 L39 38 Z" /></svg>');
+      background-repeat: repeat;
+      background-size: 60px 60px;
+    }
+
+    /* encabezado con logos institucionales */
+    .page-header-logos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5mm;
+      border-bottom: 2px solid #c9a458;
+      padding-bottom: 3mm;
+    }
+    .logo-lsaf {
+      height: 40px;
+      width: auto;
+    }
+    .logo-gn {
+      height: 45px;
+      width: auto;
+    }
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16pt;
+      color: #3f6140;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    /* contenido principal */
+    .page-content {
+      flex: 1 0 auto;
+    }
+
+    /* pie de página */
+    .page-footer {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      border-top: 1px dashed #c9a458;
+      padding-top: 4px;
+      font-family: 'Oswald', sans-serif;
+      color: #7c8f6a;
+      font-size: 10pt;
+    }
+    .footer-note {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .page-number {
+      font-weight: 600;
+      color: #5a7342;
+    }
+
+    /* títulos de sección */
+    .seccion-titulo {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 22pt;
+      text-transform: uppercase;
+      color: #2d512d;
+      border-left: 10px solid #c9a458;
+      padding-left: 10px;
+      margin: 6mm 0 4mm 0;
+      border-bottom: 1px solid #b8963c;
+      padding-bottom: 3px;
+    }
+
+    /* artículos */
+    .articulo {
+      margin: 3mm 0 5mm 0;
+      background: rgba(201, 164, 88, 0.05);
+      padding: 3mm 5mm;
+      border-left: 4px solid #4e6b3e;
+      border-radius: 0 4px 4px 0;
+    }
+    .articulo h3 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 16pt;
+      color: #3a5e3a;
+      margin-bottom: 2mm;
+    }
+    .articulo p {
+      font-size: 11.5pt;
+      line-height: 1.5;
+      margin: 2mm 0;
+      color: #1f2e1f;
+    }
+
+    /* listas con viñeta militar */
+    .lista-simple {
+      list-style: none;
+      padding-left: 2mm;
+    }
+    .lista-simple li {
+      margin: 1mm 0;
+      font-size: 11.5pt;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .lista-simple li::before {
+      content: "⚔️";
+      color: #7e642e;
+      font-size: 9pt;
+      margin-right: 5px;
+    }
+
+    /* estilo para mostrar rangos con insignia */
+    .rango-miniatura {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0ebd0;
+      border: 1px solid #b8963c;
+      border-radius: 20px;
+      padding: 2px 10px 2px 5px;
+      margin: 2px 0;
+    }
+    .rango-miniatura img {
+      height: 30px;
+      width: auto;
+      border-radius: 4px;
+    }
+    .rango-miniatura span {
+      font-weight: 600;
+      color: #1f3f1f;
+    }
+
+    /* operaciones cards */
+    .operacion-card {
+      background: #f3f0e2;
+      border: 2px solid #617e46;
+      border-radius: 8px;
+      padding: 4mm;
+      margin: 4mm 0;
+      box-shadow: 2px 2px 0 #3b5a3b;
+    }
+    .operacion-titulo {
+      font-family: Oswald;
+      font-size: 18pt;
+      color: #1e4a1e;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge {
+      background: #2d4b2d;
+      color: #f0e2b0;
+      font-size: 10pt;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* para apartados pendientes */
+    .pendiente {
+      background: #dacbaa;
+      border: 2px dashed #ab7e2f;
+      padding: 2mm;
+      margin: 2mm 0;
+      font-style: italic;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="manual">
+
+  <!-- PÁGINA 1 · PORTADA + OBJETIVO + PRINCIPIOS -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 15mm;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf" style="height: 70px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn" style="height: 80px;">
+    </div>
+    <div class="page-content" style="text-align: center;">
+      <h1 style="font-family: Oswald; font-size: 32pt; margin: 2mm 0; color: #1e3a1e;">INTEGRACIÓN OPERATIVA</h1>
+      <div style="display: flex; justify-content: center; gap: 10mm; align-items: center; margin: 5mm 0;">
+        <span style="font-family: Oswald; font-size: 22pt; color: #3f6140;">GUARDIA NACIONAL</span>
+        <span style="font-size: 28pt; color: #b68b3c;">&</span>
+        <span style="font-family: Oswald; font-size: 22pt; color: #3f6140;">AIR FORCE</span>
+      </div>
+      <h2 style="font-family: Oswald; font-weight: 400; font-size: 20pt; color: #b68b3c;">LSAF</h2>
+      <div style="height: 2px; background: #c9a458; width: 70%; margin: 8mm auto;"></div>
+      <div style="margin-top: 5mm;">
+        <span class="badge" style="font-size: 14pt; padding: 4px 12px;">DOCTRINA CONJUNTA</span>
+      </div>
+
+      <div class="seccion-titulo" style="margin-top: 10mm;">I. OBJETIVO DE LA INTEGRACIÓN</div>
+      <p style="font-size: 12pt;">Establecer un sistema de cooperación entre Guardia Nacional (GN) y Fuerza Aérea (Air Force / AF) para ejecutar operaciones conjuntas, mejorar la respuesta táctica y garantizar superioridad operativa en el servidor.</p>
+
+      <div class="seccion-titulo">II. PRINCIPIOS DE OPERACIÓN CONJUNTA</div>
+      <div class="articulo">
+        <h3>Artículo 1 — Coordinación</h3>
+        <p>Toda operación conjunta deberá: tener un mando definido, estar planificada, mantener comunicación constante.</p>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 2 — Complementariedad</h3>
+        <p>GN → Control terrestre. AF → Dominio aéreo.</p>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 3 — Jerarquía compartida</h3>
+        <p>El mando se define según la misión. No se mezclan rangos sin estructura. Se respeta la cadena de mando.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Los Santos Armed Forces · Doctrina conjunta</span>
+      <span class="page-number">1 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 2 · ROLES OPERATIVOS + TIPOS DE OPERACIONES (1 y 2) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Roles y operaciones</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">III. ROLES OPERATIVOS</div>
+      <div style="display: flex; gap: 5mm; flex-wrap: wrap;">
+        <div style="flex:1; background: #eef2e2; padding: 3mm; border-left: 6px solid #3f6140;">
+          <p style="font-size: 16pt; font-family: Oswald;">🪖 Guardia Nacional</p>
+          <ul class="lista-simple">
+            <li>Control de zonas</li><li>Seguridad terrestre</li><li>Disturbios</li><li>Evacuaciones</li><li>Logística</li>
+          </ul>
+        </div>
+        <div style="flex:1; background: #eef2e2; padding: 3mm; border-left: 6px solid #2f6f8f;">
+          <p style="font-size: 16pt; font-family: Oswald;">✈️ Air Force</p>
+          <ul class="lista-simple">
+            <li>Transporte aéreo</li><li>Reconocimiento</li><li>Apoyo táctico</li><li>Cobertura aérea</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="seccion-titulo">IV. TIPOS DE OPERACIONES CONJUNTAS</div>
+
+      <div class="operacion-card">
+        <div class="operacion-titulo">🚨 1. OPERACIONES DE EMERGENCIA</div>
+        <p><strong>Ejemplo:</strong> Accidente aéreo, desastre natural.</p>
+        <p><strong>GN:</strong> Asegura zona, rescata heridos.</p>
+        <p><strong>AF:</strong> Evacuación aérea, reconocimiento.</p>
+      </div>
+
+      <div class="operacion-card">
+        <div class="operacion-titulo">🛑 2. CONTROL DE DISTURBIOS MAYORES</div>
+        <p><strong>Ejemplo:</strong> Riots masivos.</p>
+        <p><strong>GN:</strong> Control terrestre.</p>
+        <p><strong>AF:</strong> Vigilancia aérea, reporte de movimientos.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Roles GN / AF</span>
+      <span class="page-number">2 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 3 · OPERACIONES 3,4,5 + CADENA DE MANDO CONJUNTA -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Operaciones y mando</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="operacion-card">
+        <div class="operacion-titulo">🔐 3. SEGURIDAD DE INFRAESTRUCTURA</div>
+        <p><strong>Ejemplo:</strong> Aeropuerto, base militar.</p>
+        <p><strong>GN:</strong> Perímetro.</p>
+        <p><strong>AF:</strong> Patrullaje aéreo.</p>
+      </div>
+
+      <div class="operacion-card">
+        <div class="operacion-titulo">🚛 4. OPERACIONES LOGÍSTICAS</div>
+        <p><strong>GN:</strong> Transporte terrestre.</p>
+        <p><strong>AF:</strong> Transporte aéreo.</p>
+      </div>
+
+      <div class="operacion-card">
+        <div class="operacion-titulo">🎯 5. OPERACIONES TÁCTICAS</div>
+        <p><strong>Ejemplo:</strong> Sospechosos armados, eventos hostiles.</p>
+        <p><strong>GN:</strong> Intervención.</p>
+        <p><strong>AF:</strong> Apoyo aéreo.</p>
+      </div>
+
+      <div class="seccion-titulo">V. CADENA DE MANDO CONJUNTA</div>
+      <div class="articulo">
+        <h3>Artículo 4 — Mando de operación</h3>
+        <p>Se asigna un <strong>Comandante de Operación (CO)</strong>.</p>
+        <p>Quién puede ser CO:</p>
+        <ul class="lista-simple">
+          <li>General <span style="margin-left:5px;">(insignia)</span></li>
+          <li>Coronel</li>
+          <li>Mayor (si es operación menor)</li>
+        </ul>
+        <div style="display:flex; gap:5mm; margin-top:2mm;">
+          <div class="rango-miniatura"><img src="https://i.imgur.com/mmBojZc.png" alt="General"><span>General</span></div>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/22593Jq.png" alt="Coronel"><span>Coronel</span></div>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/aYjrwzn.png" alt="Mayor"><span>Mayor</span></div>
+        </div>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 5 — Subcomandos</h3>
+        <p>GN Leader y AF Leader. Cada uno controla su fuerza.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Cadena de mando conjunta</span>
+      <span class="page-number">3 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 4 · PROTOCOLO DE COMUNICACIÓN + APOYO AÉREO -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Comunicación y apoyo</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">VI. PROTOCOLO DE COMUNICACIÓN</div>
+      <p><strong>Canales:</strong> Radio GN, Radio AF, Canal conjunto.</p>
+      <p><strong>Normas:</strong> Comunicación clara, sin spam, uso de códigos.</p>
+      <p><em>Ejemplo: “AF reporta zona segura” / “GN solicita extracción”</em></p>
+
+      <div class="seccion-titulo">VII. PROTOCOLO DE APOYO AÉREO</div>
+      <div class="articulo">
+        <h3>Artículo 6 — Solicitud</h3>
+        <p>Solo pueden solicitar apoyo:</p>
+        <ul class="lista-simple">
+          <li>Sargento Primero (mínimo)</li>
+          <li>Oficiales</li>
+        </ul>
+        <div style="display:flex; gap:5mm; margin-top:2mm; flex-wrap:wrap;">
+          <div class="rango-miniatura"><img src="https://i.imgur.com/mzOkSdk.png" alt="Sargento Primero"><span>Sargento Primero</span></div>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/7oQ8NiO.png" alt="Teniente"><span>Teniente</span></div>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/cwOGp1i.png" alt="Capitán"><span>Capitán</span></div>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/aYjrwzn.png" alt="Mayor"><span>Mayor</span></div>
+        </div>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 7 — Tipos de apoyo</h3>
+        <p>Transporte, vigilancia, cobertura.</p>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 8 — Restricciones</h3>
+        <p>No uso excesivo, no abuso de poder, solo en situaciones justificadas.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Apoyo aéreo reglado</span>
+      <span class="page-number">4 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 5 · EVACUACIÓN + INSERCIÓN + REGLAS COOPERACIÓN -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Procedimientos tácticos</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">VIII. PROTOCOLO DE EVACUACIÓN</div>
+      <p><strong>Proceso:</strong></p>
+      <ol style="margin-left: 5mm;">
+        <li>GN asegura zona</li>
+        <li>AF aterriza</li>
+        <li>GN traslada heridos</li>
+        <li>AF evacúa</li>
+      </ol>
+
+      <div class="seccion-titulo">IX. PROTOCOLO DE INSERCIÓN AÉREA</div>
+      <p><strong>Uso:</strong> Operaciones especiales, acceso a zonas difíciles.</p>
+      <p><strong>Proceso:</strong> AF transporta → GN despliega → AF se retira o cubre.</p>
+
+      <div class="seccion-titulo">X. REGLAS DE COOPERACIÓN</div>
+      <ul class="lista-simple">
+        <li>Respeto entre facciones</li>
+        <li>No interferir en funciones</li>
+        <li>Seguir órdenes del CO</li>
+        <li>Prohibido: competencia entre facciones, desobediencia, uso indebido de recursos</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Cooperación inter-fuerzas</span>
+      <span class="page-number">5 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 6 · ESCENARIOS ESPECIALES + ENTRENAMIENTO -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Escenarios y entrenamiento</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">XI. ESCENARIOS ESPECIALES</div>
+      <div style="background:#f0e9d0; padding:3mm; border-left:6px solid #c9a458;">
+        <p><span class="badge" style="background:#a04040;">🔥 Nivel Alto</span> Eventos grandes: activación total GN+AF, mando centralizado, coordinación total.</p>
+        <p><span class="badge" style="background:#b95f23;">⚠️ Nivel Medio</span> Apoyo limitado AF, GN lidera.</p>
+        <p><span class="badge" style="background:#5f7352;">🟢 Nivel Bajo</span> GN opera sola, AF en standby.</p>
+      </div>
+
+      <div class="seccion-titulo">XII. ENTRENAMIENTO CONJUNTO</div>
+      <p><strong>Obligatorio:</strong> Simulacros, prácticas de evacuación, coordinación táctica.</p>
+      <p><strong>Objetivo:</strong> Mejorar comunicación, reducir errores, aumentar realismo.</p>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Preparación continua</span>
+      <span class="page-number">6 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 7 · APARTADOS RESERVADOS + DISPOSICIONES FINALES -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Desarrollo futuro</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">XIII. APARTADOS RESERVADOS</div>
+      <div class="pendiente">
+        <p><strong>✈️ DOCTRINA AÉREA</strong> — [PENDIENTE DE DESARROLLO]</p>
+      </div>
+      <div class="pendiente">
+        <p><strong>🪖 OPERACIONES ESPECIALES</strong> — [PENDIENTE DE DESARROLLO]</p>
+      </div>
+      <div class="pendiente">
+        <p><strong>🎯 ARMAMENTO AÉREO</strong> — [PENDIENTE DE DESARROLLO]</p>
+      </div>
+
+      <div class="seccion-titulo">XIV. DISPOSICIONES FINALES</div>
+      <ul class="lista-simple">
+        <li>Toda operación conjunta debe estar autorizada</li>
+        <li>El incumplimiento será sancionado</li>
+        <li>El Alto Mando regula la integración</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Normativa conjunta</span>
+      <span class="page-number">7 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 8 · ESQUEMA DE INTEGRACIÓN (con logos reales) -->
+<div class="page">
+  <div class="page-header-logos">
+    <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+    <span class="header-title">Sinergia operativa</span>
+    <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+  </div>
+  <div class="page-content" style="display: flex; flex-direction: column; justify-content: center;">
+    <!-- Título con logos en lugar de tuercas -->
+    <div style="text-align: center; font-family: Oswald; font-size: 28pt; color: #3f6140; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="GN" style="height: 60px; width: auto;">
+      <span style="font-size: 30pt;">+</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="AF" style="height: 60px; width: auto;">
+    </div>
+
+    <!-- Columnas con logos grandes -->
+    <div style="display: flex; justify-content: space-around; align-items: center; margin: 10mm 0;">
+      <!-- Columna GN -->
+      <div style="text-align: center; flex: 1;">
+        <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" style="height: 80px; width: auto; margin-bottom: 5px;">
+        <p style="font-weight: bold; font-size: 16pt; margin: 5px 0;">Guardia Nacional</p>
+        <p style="font-size: 12pt;">Terrestre · Control · Rescate</p>
+      </div>
+
+      <!-- Separador visual (opcional) -->
+      <div style="font-size: 30pt; color: #c9a458; font-weight: bold;">&</div>
+
+      <!-- Columna AF -->
+      <div style="text-align: center; flex: 1;">
+        <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" style="height: 80px; width: auto; margin-bottom: 5px;">
+        <p style="font-weight: bold; font-size: 16pt; margin: 5px 0;">Air Force</p>
+        <p style="font-size: 12pt;">Aéreo · Apoyo · Evacuación</p>
+      </div>
+    </div>
+
+    <!-- Frase destacada -->
+    <div style="background: #eef2e2; padding: 5mm; border: 2px solid #c9a458; border-radius: 8px; text-align: center;">
+      <p style="font-family: Oswald; font-size: 18pt;">“Unidos por la superioridad operativa”</p>
+    </div>
+
+    <!-- Etiquetas al pie -->
+    <div style="margin-top: 10mm; text-align: center;">
+      <span class="badge">Mando conjunto</span>
+      <span class="badge">Comunicación</span>
+      <span class="badge">Apoyo mutuo</span>
+    </div>
+  </div>
+  <div class="page-footer">
+    <span class="footer-note">Sinergia operativa</span>
+    <span class="page-number">8 / 9</span>
+  </div>
+</div>
+
+  <!-- PÁGINA 9 · CIERRE CON LEMA -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 10mm;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf" style="height: 45px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn" style="height: 55px;">
+    </div>
+    <div class="page-content" style="text-align: center;">
+      <div style="font-size: 30pt; font-family: Oswald; color: #3f6140; margin-top: 20mm;">★ ★ ★</div>
+      <p style="font-size: 28pt; font-family: Oswald; margin: 10mm 0; color: #1d4a1d;">INTEGRACIÓN</p>
+      <p style="font-size: 22pt; font-family: Oswald; background: #c9a45820; padding: 8mm; border: 4px double #c9a458; max-width: 140mm; margin: 0 auto;">
+        “Tierra y cielo,<br>un mismo objetivo.”
+      </p>
+      <div style="margin-top: 15mm;">
+        <p style="font-size: 12pt;">Guardia Nacional · Air Force · Los Santos Armed Forces</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Lealtad · Disciplina · Honor</span>
+      <span class="page-number">9 / 9</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

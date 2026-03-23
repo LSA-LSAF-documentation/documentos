@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LSAF · Guardia Nacional · Manual Operativo</title>
+  <style>
+    /* RESET + FUENTES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #4a5e4a;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      padding: 40px 20px;
+    }
+
+    /* IMPORTANTE: display block en lugar de flex para evitar montaje */
+    .manual {
+      display: block;
+      width: 100%;
+      max-width: 210mm;
+      margin: 0 auto;
+    }
+
+    /* página A4 con altura AUTOMÁTICA para que crezca con el contenido */
+    .page {
+      width: 210mm;
+      min-height: 297mm; /* altura mínima A4, pero puede crecer */
+      height: auto; /* 🔥 clave: altura automática según contenido */
+      background: #fcf9ed;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 2px #b4945a, 0 0 0 6px #3f6140;
+      border-radius: 4px;
+      position: relative;
+      padding: 12mm 15mm 10mm 15mm;
+      margin-bottom: 30px;
+      page-break-after: always;
+      page-break-before: always;
+      break-after: page;
+      break-inside: avoid;
+      overflow: visible; /* permite que crezca */
+      display: block;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path fill="%233b5e3b" d="M50 8 L61 38 L93 38 L67 56 L77 87 L50 70 L23 87 L33 56 L7 38 L39 38 Z" /></svg>');
+      background-repeat: repeat;
+      background-size: 60px 60px;
+    }
+    
+    /* Primera página no necesita salto antes */
+    .page:first-child {
+      page-break-before: auto;
+    }
+
+    /* Eliminar overflow hidden y scroll para que fluya natural */
+    .page-content {
+      overflow: visible;
+      height: auto;
+      padding-right: 0;
+    }
+
+    /* 🔥 EVITA QUE ELEMENTOS SE ROMPAN ENTRE PÁGINAS */
+    .page-content,
+    .article-block,
+    .protocol-section,
+    .info-card,
+    .principle-card,
+    .golden-rule,
+    .clausula-final {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* cabecera con logos */
+    .page-header-logos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5mm;
+      border-bottom: 2px solid #c9a458;
+      padding-bottom: 3mm;
+      flex-shrink: 0;
+    }
+    .logo-lsaf, .logo-gn {
+      height: 45px;
+      width: auto;
+    }
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14pt;
+      color: #3f6140;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    /* pie de página */
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      border-top: 1px dashed #c9a458;
+      padding-top: 4px;
+      font-family: 'Oswald', sans-serif;
+      color: #7c8f6a;
+      font-size: 10pt;
+      flex-shrink: 0;
+    }
+    .footer-note {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .page-number {
+      font-weight: 600;
+      color: #5a7342;
+    }
+
+    /* títulos de sección */
+    .seccion-titulo {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 22pt;
+      text-transform: uppercase;
+      color: #2d512d;
+      border-left: 10px solid #c9a458;
+      padding-left: 10px;
+      margin: 6mm 0 4mm 0;
+      border-bottom: 1px solid #b8963c;
+      padding-bottom: 3px;
+    }
+
+    .badge {
+      background: #2d4b2d;
+      color: #f0e2b0;
+      font-size: 10pt;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .article-block {
+      margin-bottom: 5mm;
+    }
+    .article-title {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 13pt;
+      color: #1f3f1f;
+      margin-bottom: 2mm;
+    }
+    .article-content {
+      font-size: 10.5pt;
+      line-height: 1.45;
+      color: #2d3a2a;
+      text-align: justify;
+      margin-left: 3mm;
+    }
+    .principle-list, .functions-list {
+      list-style: none;
+      padding-left: 5mm;
+    }
+    .principle-list li, .functions-list li {
+      margin-bottom: 2mm;
+      font-size: 10.5pt;
+      position: relative;
+      padding-left: 5mm;
+      line-height: 1.4;
+    }
+    .principle-list li::before, .functions-list li::before {
+      content: "◆";
+      color: #c9a458;
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+    .grid-cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6mm;
+      margin: 4mm 0;
+    }
+    .info-card {
+      background: #e7ebdd;
+      border: 1px solid #8faa6e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 1px 1px 0 #768d5c;
+      padding: 3mm;
+    }
+    .info-card h4 {
+      font-family: 'Oswald', sans-serif;
+      color: #2d512d;
+      border-bottom: 1px solid #c9a458;
+      margin-bottom: 2mm;
+      padding-bottom: 1mm;
+      font-size: 11pt;
+    }
+    .info-card p {
+      font-size: 10pt;
+      color: #1d3a1d;
+    }
+    .stars-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 5mm 0;
+    }
+    .star-icon {
+      font-size: 28pt;
+      color: #c9a458;
+    }
+    .golden-rule {
+      background: #fef9ea;
+      border-left: 6px solid #c9a458;
+      padding: 5mm;
+      margin: 5mm 0;
+      font-style: italic;
+      font-weight: 500;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .signature-area {
+      text-align: center;
+      margin: 8mm 0;
+    }
+    .signature-img {
+      max-width: 180px;
+      margin: 3mm auto;
+    }
+    .warning-note {
+      font-size: 8pt;
+      text-align: center;
+      color: #7c8f6a;
+      margin-top: 5mm;
+      border-top: 1px dashed #b8963c;
+      padding-top: 3mm;
+    }
+    .principle-card {
+      background: #eef2e4;
+      border-left: 8px solid #c9a458;
+      padding: 3mm 4mm;
+      margin-bottom: 4mm;
+      border-radius: 8px;
+    }
+    .principle-card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 13pt;
+      color: #2d512d;
+      margin-bottom: 2mm;
+    }
+    .principle-card p {
+      font-size: 10pt;
+      line-height: 1.4;
+      color: #2d3a2a;
+    }
+    .protocol-section {
+      margin-bottom: 6mm;
+      border-bottom: 1px solid #e0d5b5;
+      padding-bottom: 4mm;
+    }
+    .clausula-final {
+      margin-top: 4mm;
+      padding-top: 2mm;
+      border-top: 1px dashed #b8963c;
+      font-style: italic;
+      background: #f7f3e2;
+      padding: 2mm 4mm;
+      border-radius: 6px;
+      font-size: 10pt;
+    }
+
+    /* Portada */
+    .portada-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15mm;
+      margin: 0 0 10mm 0;
+    }
+    .portada-logos img {
+      height: 85px;
+      width: auto;
+      object-fit: contain;
+    }
+    .cover-title {
+      text-align: center;
+      margin-bottom: 8mm;
+    }
+    .cover-title h1 {
+      font-family: Oswald;
+      font-size: 32pt;
+      margin: 2mm 0;
+      color: #1e3a1e;
+      letter-spacing: 2px;
+    }
+    .cover-title h2 {
+      font-family: Oswald;
+      font-weight: 400;
+      font-size: 22pt;
+      color: #b68b3c;
+    }
+
+    /* Ajustes de impresión */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+      .page {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin: 0;
+        page-break-after: always;
+        page-break-before: always;
+        height: auto;
+        min-height: 297mm;
+        overflow: visible;
+      }
+      .page:first-child {
+        page-break-before: auto;
+      }
+      .page-content {
+        overflow: visible;
+        height: auto;
+      }
+      .manual {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
+      .page {
+        width: 100%;
+        height: auto;
+        min-height: 297mm;
+        overflow: visible;
+      }
+      .page-content {
+        overflow: visible;
+        height: auto;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="manual">
+  <!-- ==================== PÁGINA 1: PORTADA ==================== -->
+  <div class="page">
+    <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; min-height: 250px;">
+      <div class="portada-logos">
+        <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF">
+        <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional">
+      </div>
+      <div style="text-align: center;">
+        <div class="cover-title">
+          <h1>LOS SANTOS ARMED FORCES</h1>
+          <h2>NATIONAL GUARD</h2>
+          <div style="height: 2px; background: #c9a458; width: 70%; margin: 5mm auto;"></div>
+          <p style="font-size: 14pt; margin-top: 6mm;"><span style="background: #2d4b2d; color: #f0e2b0; padding: 3px 12px; border-radius: 30px;">📘 DOCUMENTO OFICIAL</span></p>
+          <p style="font-size: 16pt; margin-top: 8mm; font-weight: 500;">MANUAL OPERATIVO Y DOCTRINAL</p>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">LSAF · Guardia Nacional</span>
+      <span class="page-number">1</span>
+    </div>
+  </div>
+
+  <!-- ==================== PÁGINA 2: DISPOSICIONES GENERALES (Art 1 y 2) ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">I. DISPOSICIONES GENERALES</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="article-block"><div class="article-title">Artículo 1 — Definición</div><div class="article-content">La Guardia Nacional es una división perteneciente a las Fuerzas Armadas de Los Santos (LSAF), encargada de ejecutar operaciones de apoyo interno, respuesta a emergencias, control de disturbios y seguridad estratégica dentro del territorio. Actúa como una fuerza híbrida entre el ámbito militar y civil, bajo autorización del Alto Mando.</div></div>
+      <div class="article-block">
+        <div class="article-title">Artículo 2 — Naturaleza</div>
+        <div class="article-content">La Guardia Nacional constituye una fuerza de carácter militar con funciones de apoyo interno, cuya naturaleza se define a través de los siguientes principios fundamentales:</div>
+        
+        <div style="margin: 4mm 0 3mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin: 3mm 0 1mm 0;">1. Unidad Militar Activa</div>
+          <div class="article-content" style="margin-left: 3mm;">La Guardia Nacional es una unidad formalmente integrada dentro de las Fuerzas Armadas de Los Santos (LSAF), sujeta a disciplina, jerarquía y doctrina militar.<br>
+          Todo su personal:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Está obligado a cumplir órdenes superiores</li>
+            <li style="margin-bottom: 1mm;">✓ Se rige por la cadena de mando</li>
+            <li style="margin-bottom: 1mm;">✓ Opera bajo estructura organizativa militar</li>
+          </ul>
+          Su condición de unidad activa implica:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Disponibilidad operativa en cualquier momento</li>
+            <li style="margin-bottom: 1mm;">✓ Capacidad de respuesta inmediata</li>
+            <li style="margin-bottom: 1mm;">✓ Participación en operaciones tácticas y estratégicas</li>
+          </ul>
+          </div>
+        </div>
+        
+        <div style="margin: 4mm 0 3mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin: 3mm 0 1mm 0;">2. Operación en Territorio Nacional</div>
+          <div class="article-content" style="margin-left: 3mm;">A diferencia de otras divisiones militares, la Guardia Nacional desarrolla sus funciones dentro del territorio interno, actuando en:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Zonas urbanas</li>
+            <li style="margin-bottom: 1mm;">✓ Zonas rurales</li>
+            <li style="margin-bottom: 1mm;">✓ Infraestructura crítica</li>
+            <li style="margin-bottom: 1mm;">✓ Escenarios de crisis o desastre</li>
+          </ul>
+          Su presencia dentro del territorio implica:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Interacción directa con población civil</li>
+            <li style="margin-bottom: 1mm;">✓ Coordinación con entidades no militares</li>
+            <li style="margin-bottom: 1mm;">✓ Responsabilidad en el mantenimiento del orden interno</li>
+          </ul>
+          </div>
+        </div>
+        
+        <div style="margin: 4mm 0 3mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin: 3mm 0 1mm 0;">3. Apoyo a Agencias Civiles y Militares</div>
+          <div class="article-content" style="margin-left: 3mm;">La Guardia Nacional cumple un rol de soporte estratégico, actuando como fuerza de refuerzo cuando las capacidades de otras agencias son superadas.<br>
+          Brinda apoyo a:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Fuerzas policiales (LSPD / Sheriff)</li>
+            <li style="margin-bottom: 1mm;">✓ Servicios médicos (EMS)</li>
+            <li style="margin-bottom: 1mm;">✓ Fuerza Aérea (Air Force)</li>
+            <li style="margin-bottom: 1mm;">✓ Otras unidades militares</li>
+          </ul>
+          Este apoyo incluye:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Refuerzo operativo</li>
+            <li style="margin-bottom: 1mm;">✓ Seguridad adicional</li>
+            <li style="margin-bottom: 1mm;">✓ Logística y transporte</li>
+            <li style="margin-bottom: 1mm;">✓ Coordinación en eventos complejos</li>
+          </ul>
+          </div>
+        </div>
+        
+        <div style="margin: 4mm 0 3mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin: 3mm 0 1mm 0;">4. Activación Bajo Autorización Superior</div>
+          <div class="article-content" style="margin-left: 3mm;">La Guardia Nacional no actúa de forma autónoma ni permanente en el territorio.<br>
+          Su despliegue está estrictamente regulado y requiere autorización del Alto Mando, garantizando:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Uso controlado del poder militar</li>
+            <li style="margin-bottom: 1mm;">✓ Prevención de abuso de autoridad</li>
+            <li style="margin-bottom: 1mm;">✓ Equilibrio en el entorno</li>
+          </ul>
+          Toda activación debe:
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Estar justificada por la situación</li>
+            <li style="margin-bottom: 1mm;">✓ Seguir los niveles de alerta establecidos</li>
+            <li style="margin-bottom: 1mm;">✓ Ser supervisada por rangos superiores</li>
+          </ul>
+          </div>
+        </div>
+        
+        <div class="clausula-final">Cláusula Final<br>La naturaleza de la Guardia Nacional se fundamenta en su rol como fuerza de equilibrio entre el ámbito militar y civil, actuando únicamente cuando la situación lo requiere y bajo estrictos parámetros de control, disciplina y legalidad operativa.</div>
+      </div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Naturaleza</span><span class="page-number">2</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 3: PRINCIPIOS FUNDAMENTALES ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">PRINCIPIOS FUNDAMENTALES</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="article-block">
+        <div class="article-title">Artículo 3 — Principios Fundamentales</div>
+        <div class="article-content">Los principios fundamentales constituyen la base ética, operativa y disciplinaria de la Guardia Nacional. Todo miembro deberá conocerlos, aplicarlos y defenderlos en el ejercicio de sus funciones.</div>
+      </div>
+      
+      <div class="principle-card">
+        <h3>1. Disciplina</h3>
+        <p>La disciplina es el pilar esencial de la estructura militar y garantiza el correcto funcionamiento de la Guardia Nacional.</p>
+        <p style="margin-top: 2mm;"><strong>Implica:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Cumplimiento estricto de órdenes superiores</li>
+          <li style="margin-bottom: 1mm;">✓ Respeto absoluto a la cadena de mando</li>
+          <li style="margin-bottom: 1mm;">✓ Puntualidad y responsabilidad en el servicio</li>
+          <li style="margin-bottom: 1mm;">✓ Control emocional en situaciones de presión</li>
+        </ul>
+        <p style="margin-top: 2mm;">La disciplina no es opcional; es una obligación permanente que asegura:</p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Coordinación efectiva en operaciones</li>
+          <li style="margin-bottom: 1mm;">✓ Reducción de errores tácticos</li>
+          <li style="margin-bottom: 1mm;">✓ Imagen profesional de la institución</li>
+        </ul>
+        <p style="margin-top: 2mm; font-style: italic;">El incumplimiento de la disciplina será considerado una falta que afecta directamente la operatividad de la unidad.</p>
+      </div>
+      
+      <div class="principle-card">
+        <h3>2. Lealtad</h3>
+        <p>La lealtad representa el compromiso del miembro con la institución, sus compañeros y la misión asignada.</p>
+        <p style="margin-top: 2mm;"><strong>Se manifiesta en:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Fidelidad a la Guardia Nacional y al Alto Mando</li>
+          <li style="margin-bottom: 1mm;">✓ Apoyo constante al equipo de trabajo</li>
+          <li style="margin-bottom: 1mm;">✓ Protección de la integridad de la unidad</li>
+          <li style="margin-bottom: 1mm;">✓ Cumplimiento de órdenes sin traicionar la confianza depositada</li>
+        </ul>
+        <p style="margin-top: 2mm;"><strong>La lealtad también implica:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ No actuar en beneficio personal por encima del colectivo</li>
+          <li style="margin-bottom: 1mm;">✓ No comprometer operaciones ni información sensible</li>
+          <li style="margin-bottom: 1mm;">✓ Mantener cohesión dentro de la unidad</li>
+        </ul>
+        <p style="margin-top: 2mm; font-style: italic;">La ausencia de lealtad debilita la estructura y pone en riesgo toda operación.</p>
+      </div>
+      
+      <div class="principle-card">
+        <h3>3. Respeto al Rol Civil</h3>
+        <p>La Guardia Nacional opera dentro del territorio y en contacto directo con civiles, por lo que debe mantener una conducta adecuada en todo momento.</p>
+        <p style="margin-top: 2mm;"><strong>Este principio exige:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Trato respetuoso hacia la población civil</li>
+          <li style="margin-bottom: 1mm;">✓ Evitar abuso de autoridad</li>
+          <li style="margin-bottom: 1mm;">✓ Reconocer los límites entre función militar y civil</li>
+          <li style="margin-bottom: 1mm;">✓ Actuar como fuerza de apoyo, no de dominación</li>
+        </ul>
+        <p style="margin-top: 2mm;"><strong>El respeto al entorno civil garantiza:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Realismo en el entorno</li>
+          <li style="margin-bottom: 1mm;">✓ Confianza entre facciones</li>
+          <li style="margin-bottom: 1mm;">✓ Estabilidad social dentro del servidor</li>
+        </ul>
+        <p style="margin-top: 2mm; font-style: italic;">Cualquier acción que vulnere este principio será considerada una falta grave.</p>
+      </div>
+      
+      <div class="principle-card">
+        <h3>4. Uso Proporcional de la Fuerza</h3>
+        <p>El uso de la fuerza debe regirse por criterios de necesidad, proporcionalidad y control.</p>
+        <p style="margin-top: 2mm;"><strong>Esto implica:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Utilizar únicamente la fuerza necesaria para resolver una situación</li>
+          <li style="margin-bottom: 1mm;">✓ Escalar progresivamente según el nivel de amenaza</li>
+          <li style="margin-bottom: 1mm;">✓ Priorizar métodos no letales antes de recurrir a fuerza letal</li>
+          <li style="margin-bottom: 1mm;">✓ Evitar daños colaterales innecesarios</li>
+        </ul>
+        <p style="margin-top: 2mm;"><strong>El uso indebido de la fuerza:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Compromete la legitimidad de la institución</li>
+          <li style="margin-bottom: 1mm;">✓ Afecta la integridad personal</li>
+          <li style="margin-bottom: 1mm;">✓ Será sancionado de forma estricta</li>
+        </ul>
+        <p style="margin-top: 2mm; font-style: italic;">Este principio es obligatorio en toda intervención, sin excepción.</p>
+      </div>
+      
+      <div class="principle-card">
+        <h3>5. Coordinación Interinstitucional</h3>
+        <p>La Guardia Nacional no opera de forma aislada, sino en conjunto con otras agencias.</p>
+        <p style="margin-top: 2mm;"><strong>Este principio establece:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Comunicación constante con otras facciones</li>
+          <li style="margin-bottom: 1mm;">✓ Respeto por las competencias de cada institución</li>
+          <li style="margin-bottom: 1mm;">✓ Trabajo en equipo durante operaciones conjuntas</li>
+          <li style="margin-bottom: 1mm;">✓ Integración con Air Force, policía y EMS</li>
+        </ul>
+        <p style="margin-top: 2mm;"><strong>La correcta coordinación permite:</strong></p>
+        <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm;">✓ Mayor eficiencia operativa</li>
+          <li style="margin-bottom: 1mm;">✓ Reducción de conflictos entre facciones</li>
+          <li style="margin-bottom: 1mm;">✓ Mejor desarrollo de eventos</li>
+        </ul>
+        <p style="margin-top: 2mm; font-style: italic;">La falta de coordinación genera desorden, errores y pérdida de control en situaciones críticas.</p>
+      </div>
+      
+      <div class="clausula-final">Cláusula Final<br>El incumplimiento de cualquiera de estos principios fundamentales será considerado una falta grave, ya que representan la base del comportamiento y la identidad de la Guardia Nacional dentro de las Fuerzas Armadas de Los Santos.</div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Ética</span><span class="page-number">3</span></div>
+</div>
+
+  <!-- ==================== PÁGINA 4: MISIÓN, VISIÓN, FUNCIONES ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">MISIÓN · VISIÓN · FUNCIONES</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="article-block"><div class="article-title">Artículo 4 — Jurisdicción</div><div class="article-content">La Guardia Nacional podrá operar en zonas urbanas, rurales, infraestructura crítica y espacios de desastre o crisis, bajo orden directa del Alto Mando.</div></div>
+      <div class="article-block"><div class="article-title">Misión</div><div class="article-content">Garantizar la estabilidad interna, brindar apoyo en emergencias y reforzar la seguridad del territorio mediante operaciones tácticas, logísticas y de control.</div></div>
+      <div class="article-block"><div class="article-title">Visión</div><div class="article-content">Ser la fuerza de respuesta más eficiente y disciplinada en situaciones críticas dentro del servidor.</div></div>
+      <div class="article-block"><div class="article-title">III. FUNCIONES PRINCIPALES</div><ul class="functions-list"><li><strong>ERU — Emergency Response Unit:</strong> Respuesta a emergencias, desastres naturales, evacuaciones, rescate.</li><li><strong>RCU — Riot Control Unit:</strong> Control de disturbios, protestas, motines. Uso de escudos, gas lacrimógeno.</li><li><strong>SSU — Security Support Unit:</strong> Seguridad estratégica, protección de infraestructura crítica, convoyes.</li><li><strong>LOG — Logistics Unit:</strong> Apoyo logístico, transporte de equipo, reabastecimiento.</li><li><strong>SUPPORT — Apoyo a Fuerzas:</strong> Refuerzo a LSPD, Sheriff, Air Force, EMS.</li></ul><div class="clausula-final">Limitaciones operativas: NO actuar como policía regular, NO patrullaje rutinario, intervención solo bajo autorización.</div></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Competencias</span><span class="page-number">4</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 5: ESTRUCTURA ORGANIZATIVA ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">V. ESTRUCTURA ORGANIZATIVA</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="article-block"><div class="article-title">Alto Mando</div><div class="article-content">General de División · Coronel de Guardia Nacional</div></div>
+      <div class="grid-cols-2">
+        <div class="info-card"><h4>RCU — Riot Control Unit</h4><p>Control de disturbios, orden público, formaciones antidisturbios.</p></div>
+        <div class="info-card"><h4>ERU — Emergency Response Unit</h4><p>Emergencias, rescate, primeros auxilios tácticos.</p></div>
+        <div class="info-card"><h4>SSU — Security Support Unit</h4><p>Seguridad estratégica, protección de infraestructura crítica.</p></div>
+        <div class="info-card"><h4>LOG — Logistics Unit</h4><p>Logística, transporte, suministros y campamentos.</p></div>
+      </div>
+      <div class="article-content">Cada unidad cuenta con líder operativo y personal asignado según la naturaleza de la operación.</div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Organigrama</span><span class="page-number">5</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 6: PROTOCOLOS 1 Y 2 ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">PROTOCOLOS OPERATIVOS</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      
+      <!-- PROTOCOLO 1 — ACTIVACIÓN -->
+      <div class="protocol-section">
+        <div class="article-title">Protocolo 1 — Activación</div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">1.1 Definición</div>
+          <div class="article-content">La activación es el proceso mediante el cual la Guardia Nacional pasa de estado de disponibilidad a estado operativo, autorizando su despliegue en el territorio ante una situación determinada.</div>
+        </div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">1.2 Criterios de activación</div>
+          <div class="article-content">La activación solo procederá bajo las siguientes condiciones:</div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #b83b3b; margin-top: 2mm;">🔴 Evento de magnitud mayor</div>
+            <div class="article-content">Situaciones que representen un riesgo significativo para la seguridad, estabilidad o integridad del territorio.<br>Incluye:</div>
+            <ul style="margin-left: 8mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Alteraciones graves del orden público</li>
+              <li style="margin-bottom: 1mm;">✓ Incidentes con múltiples afectados</li>
+              <li style="margin-bottom: 1mm;">✓ Amenazas organizadas o de alta peligrosidad</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #b83b3b; margin-top: 2mm;">🔴 Orden directa del Alto Mando</div>
+            <div class="article-content">La activación podrá ejecutarse por decisión estratégica del Alto Mando, considerando:</div>
+            <ul style="margin-left: 8mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Información de inteligencia</li>
+              <li style="margin-bottom: 1mm;">✓ Evaluación preventiva</li>
+              <li style="margin-bottom: 1mm;">✓ Escenarios de riesgo potencial</li>
+            </ul>
+            <div class="article-content">Esta activación puede ser:</div>
+            <ul style="margin-left: 8mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Preventiva</li>
+              <li style="margin-bottom: 1mm;">✓ Reactiva</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #b83b3b; margin-top: 2mm;">🔴 Superación de capacidad policial</div>
+            <div class="article-content">Cuando las fuerzas policiales no logren contener o controlar la situación, se autoriza la intervención de la Guardia Nacional como fuerza de refuerzo.<br>Esto implica:</div>
+            <ul style="margin-left: 8mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Apoyo táctico</li>
+              <li style="margin-bottom: 1mm;">✓ Control de áreas críticas</li>
+              <li style="margin-bottom: 1mm;">✓ Restablecimiento del orden</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">1.3 Procedimiento de activación</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">➤ Recepción de información o alerta</li>
+            <li style="margin-bottom: 1mm;">➤ Evaluación de la situación</li>
+            <li style="margin-bottom: 1mm;">➤ Clasificación del nivel de amenaza</li>
+            <li style="margin-bottom: 1mm;">➤ Autorización por rango competente</li>
+            <li style="margin-bottom: 1mm;">➤ Emisión de orden de despliegue</li>
+          </ul>
+        </div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">1.4 Restricciones</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Queda prohibida la auto-activación de unidades</li>
+            <li style="margin-bottom: 1mm;">✓ Toda activación debe estar documentada</li>
+            <li style="margin-bottom: 1mm;">✓ Debe existir una justificación operativa clara</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- PROTOCOLO 2 — DESPLIEGUE -->
+      <div class="protocol-section">
+        <div class="article-title">Protocolo 2 — Despliegue</div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">2.1 Definición</div>
+          <div class="article-content">El despliegue es la movilización organizada de unidades hacia una zona específica con el objetivo de intervenir, controlar o asegurar una situación.</div>
+        </div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">2.2 Establecimiento de zona de operación</div>
+          <div class="article-content">Previo al despliegue se deberá definir:</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Área geográfica de intervención</li>
+            <li style="margin-bottom: 1mm;">✓ Perímetro de seguridad</li>
+            <li style="margin-bottom: 1mm;">✓ Puntos de acceso y salida</li>
+            <li style="margin-bottom: 1mm;">✓ Zonas de riesgo</li>
+          </ul>
+          <div class="article-content" style="margin-top: 2mm;"><strong>Clasificación de zonas:</strong></div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Zona caliente (alto riesgo)</li>
+            <li style="margin-bottom: 1mm;">✓ Zona controlada (presencia operativa)</li>
+            <li style="margin-bottom: 1mm;">✓ Zona segura (logística y soporte)</li>
+          </ul>
+        </div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">2.3 Asignación de unidades</div>
+          <div class="article-content">Se designará una unidad responsable según la naturaleza de la operación:</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Control de disturbios → Unidad RCU</li>
+            <li style="margin-bottom: 1mm;">✓ Emergencias → Unidad ERU</li>
+            <li style="margin-bottom: 1mm;">✓ Seguridad → Unidad SSU</li>
+            <li style="margin-bottom: 1mm;">✓ Logística → Unidad LOG</li>
+          </ul>
+          <div class="article-content">Cada unidad contará con:</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Un líder operativo</li>
+            <li style="margin-bottom: 1mm;">✓ Personal asignado</li>
+            <li style="margin-bottom: 1mm;">✓ Objetivos definidos</li>
+          </ul>
+        </div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">2.4 Fases del despliegue</div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #2d512d;">Fase 1 — Movilización</div>
+            <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Preparación de equipo</li>
+              <li style="margin-bottom: 1mm;">✓ Salida desde base</li>
+              <li style="margin-bottom: 1mm;">✓ Traslado ordenado</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #2d512d;">Fase 2 — Inserción</div>
+            <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Llegada a zona</li>
+              <li style="margin-bottom: 1mm;">✓ Reconocimiento inicial</li>
+              <li style="margin-bottom: 1mm;">✓ Establecimiento de posiciones</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #2d512d;">Fase 3 — Operación</div>
+            <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Ejecución de tareas asignadas</li>
+              <li style="margin-bottom: 1mm;">✓ Control de la situación</li>
+              <li style="margin-bottom: 1mm;">✓ Ajuste táctico según evolución</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #2d512d;">Fase 4 — Consolidación</div>
+            <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Aseguramiento del área</li>
+              <li style="margin-bottom: 1mm;">✓ Reducción de amenazas</li>
+              <li style="margin-bottom: 1mm;">✓ Preparación para retirada</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">2.5 Coordinación interagencial</div>
+          <div class="article-content">Desde el inicio del despliegue se deberá coordinar con:</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Fuerzas policiales</li>
+            <li style="margin-bottom: 1mm;">✓ Servicios médicos</li>
+            <li style="margin-bottom: 1mm;">✓ Fuerzas aéreas</li>
+            <li style="margin-bottom: 1mm;">✓ Comando superior</li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Activación y Despliegue</span><span class="page-number">6</span></div>
+</div>
+
+  <!-- ==================== PÁGINA 7: PROTOCOLO 3 USO DE LA FUERZA ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">PROTOCOLO 3 — USO DE LA FUERZA</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      
+      <!-- 3.1 Principio general -->
+      <div style="margin: 0 0 4mm 0;">
+        <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin-bottom: 2mm;">3.1 Principio general</div>
+        <div class="article-content">El uso de la fuerza se regirá por los principios de:</div>
+        <ul style="margin-left: 8mm; margin-top: 2mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Legalidad</li>
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Necesidad</li>
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Proporcionalidad</li>
+        </ul>
+      </div>
+      
+      <!-- 3.2 Escala de uso de la fuerza -->
+      <div style="margin: 0 0 4mm 0;">
+        <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin-bottom: 2mm;">3.2 Escala de uso de la fuerza</div>
+        <div class="article-content">Toda intervención deberá seguir la siguiente progresión obligatoria:</div>
+        
+        <!-- Nivel 1 - Presencia -->
+        <div style="margin: 3mm 0 2mm 3mm; background: #eef2e4; padding: 2mm 3mm; border-radius: 6px;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 11pt; color: #2d512d;">1. Presencia</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Despliegue visible</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Uniforme reglamentario</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Postura disuasiva</li>
+          </ul>
+          <div style="margin-top: 2mm;"><strong style="color: #2d512d;">Objetivo:</strong> <span style="font-size: 10pt;">Prevenir la escalada de la situación.</span></div>
+        </div>
+        
+        <!-- Nivel 2 - Orden verbal -->
+        <div style="margin: 3mm 0 2mm 3mm; background: #eef2e4; padding: 2mm 3mm; border-radius: 6px;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 11pt; color: #2d512d;">2. Orden verbal</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Instrucciones claras</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Advertencias directas</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Comunicación firme</li>
+          </ul>
+          <div style="margin-top: 2mm;"><strong style="color: #2d512d;">Objetivo:</strong> <span style="font-size: 10pt;">Lograr cooperación sin contacto físico.</span></div>
+        </div>
+        
+        <!-- Nivel 3 - Control físico -->
+        <div style="margin: 3mm 0 2mm 3mm; background: #eef2e4; padding: 2mm 3mm; border-radius: 6px;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 11pt; color: #2d512d;">3. Control físico</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Reducción de movimientos</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Técnicas de inmovilización</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Uso mínimo de fuerza</li>
+          </ul>
+          <div style="margin-top: 2mm;"><strong style="color: #2d512d;">Objetivo:</strong> <span style="font-size: 10pt;">Neutralizar sin causar daño significativo.</span></div>
+        </div>
+        
+        <!-- Nivel 4 - Equipamiento no letal -->
+        <div style="margin: 3mm 0 2mm 3mm; background: #eef2e4; padding: 2mm 3mm; border-radius: 6px;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 11pt; color: #2d512d;">4. Equipamiento no letal</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Dispositivos eléctricos</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Gas lacrimógeno</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Medios de dispersión</li>
+          </ul>
+          <div style="margin-top: 2mm;"><strong style="color: #2d512d;">Objetivo:</strong> <span style="font-size: 10pt;">Controlar situaciones de resistencia o disturbios.</span></div>
+        </div>
+        
+        <!-- Nivel 5 - Fuerza letal -->
+        <div style="margin: 3mm 0 2mm 3mm; background: #fef1e0; border-left: 4px solid #b83b3b; padding: 2mm 3mm; border-radius: 6px;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 11pt; color: #b83b3b;">5. Fuerza letal (último recurso)</div>
+          <div style="margin-top: 2mm;"><strong>Solo autorizada cuando:</strong></div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ Existe amenaza real e inmediata contra la vida</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ No hay alternativas viables</li>
+            <li style="margin-bottom: 1mm; font-size: 10pt;">✓ La situación lo exige de forma urgente</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- 3.3 Responsabilidad -->
+      <div style="margin: 0 0 4mm 0;">
+        <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin-bottom: 2mm;">3.3 Responsabilidad</div>
+        <div class="article-content">Todo uso de la fuerza:</div>
+        <ul style="margin-left: 8mm; margin-top: 2mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Debe ser justificable</li>
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Puede ser evaluado posteriormente</li>
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Es responsabilidad directa del ejecutante y su superior</li>
+        </ul>
+      </div>
+      
+      <!-- 3.4 Prohibiciones -->
+      <div style="margin: 0 0 4mm 0;">
+        <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12pt; color: #2d512d; margin-bottom: 2mm;">3.4 Prohibiciones</div>
+        <ul style="margin-left: 8mm; margin-top: 2mm; list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Uso excesivo de la fuerza</li>
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Aplicación fuera de protocolo</li>
+          <li style="margin-bottom: 1mm; font-size: 10.5pt;">✓ Uso sin justificación</li>
+        </ul>
+      </div>
+      
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Escala de Fuerza</span><span class="page-number">7</span></div>
+</div>
+
+  <!-- ==================== PÁGINA 8: PROTOCOLO 4 + CÓDIGO DE CONDUCTA ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">COORDINACIÓN · CÓDIGO DE CONDUCTA</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      
+      <!-- PROTOCOLO 4 — COORDINACIÓN -->
+      <div class="protocol-section">
+        <div class="article-title">Protocolo 4 — Coordinación</div>
+        
+        <!-- 4.1 Definición -->
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">4.1 Definición</div>
+          <div class="article-content">La coordinación es el proceso mediante el cual la Guardia Nacional sincroniza sus acciones con otras entidades para garantizar una operación eficiente y organizada.</div>
+        </div>
+        
+        <!-- 4.2 Entidades de coordinación -->
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">4.2 Entidades de coordinación</div>
+          <div class="article-content">La Guardia Nacional deberá mantener comunicación activa con:</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Fuerzas policiales</li>
+            <li style="margin-bottom: 1mm;">✓ Servicios médicos (EMS)</li>
+            <li style="margin-bottom: 1mm;">✓ Comando militar</li>
+            <li style="margin-bottom: 1mm;">✓ Fuerza Aérea</li>
+          </ul>
+        </div>
+        
+        <!-- 4.3 Niveles de coordinación -->
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">4.3 Niveles de coordinación</div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #2d512d;">Nivel 1 — Informativo</div>
+            <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Intercambio de información</li>
+              <li style="margin-bottom: 1mm;">✓ Reportes de situación</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #2d512d;">Nivel 2 — Operativo</div>
+            <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Acciones conjuntas</li>
+              <li style="margin-bottom: 1mm;">✓ Apoyo mutuo</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 2mm 0 1mm 3mm;">
+            <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5pt; color: #2d512d;">Nivel 3 — Estratégico</div>
+            <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Planificación conjunta</li>
+              <li style="margin-bottom: 1mm;">✓ Mando unificado</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- 4.4 Normas de comunicación -->
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">4.4 Normas de comunicación</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Mensajes claros y concisos</li>
+            <li style="margin-bottom: 1mm;">✓ Uso de canales asignados</li>
+            <li style="margin-bottom: 1mm;">✓ Confirmación de órdenes</li>
+          </ul>
+        </div>
+        
+        <!-- 4.5 Objetivos de la coordinación -->
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">4.5 Objetivos de la coordinación</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Evitar interferencias</li>
+            <li style="margin-bottom: 1mm;">✓ Optimizar recursos</li>
+            <li style="margin-bottom: 1mm;">✓ Mejorar tiempos de respuesta</li>
+            <li style="margin-bottom: 1mm;">✓ Garantizar control total de la situación</li>
+          </ul>
+        </div>
+        
+        <!-- 4.6 Responsabilidad de mando -->
+        <div style="margin: 3mm 0 2mm 0;">
+          <div style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11pt; color: #2d512d;">4.6 Responsabilidad de mando</div>
+          <div class="article-content">Los oficiales deberán:</div>
+          <ul style="margin-left: 5mm; margin-top: 1mm; list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 1mm;">✓ Mantener comunicación constante</li>
+            <li style="margin-bottom: 1mm;">✓ Reportar cambios en la situación</li>
+            <li style="margin-bottom: 1mm;">✓ Coordinar decisiones tácticas</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- CÓDIGO DE CONDUCTA -->
+      <div class="article-block">
+        <div class="article-title">VII. CÓDIGO DE CONDUCTA</div>
+        
+        <div class="grid-cols-2">
+          <div class="info-card">
+            <h4>Obligaciones</h4>
+            <ul style="margin-left: 3mm; margin-top: 2mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Obedecer órdenes</li>
+              <li style="margin-bottom: 1mm;">✓ Mantener disciplina</li>
+              <li style="margin-bottom: 1mm;">✓ Respetar civiles</li>
+              <li style="margin-bottom: 1mm;">✓ Actuar en equipo</li>
+              <li style="margin-bottom: 1mm;">✓ Reportar irregularidades</li>
+              <li style="margin-bottom: 1mm;">✓ Mantener profesionalismo</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>Prohibiciones</h4>
+            <ul style="margin-left: 3mm; margin-top: 2mm; list-style: none; padding-left: 0;">
+              <li style="margin-bottom: 1mm;">✓ Abuso de poder</li>
+              <li style="margin-bottom: 1mm;">✓ Uso innecesario de fuerza</li>
+              <li style="margin-bottom: 1mm;">✓ Romper rol militar</li>
+              <li style="margin-bottom: 1mm;">✓ Desobediencia</li>
+              <li style="margin-bottom: 1mm;">✓ Actuación fuera de protocolo</li>
+              <li style="margin-bottom: 1mm;">✓ Divulgación de información sensible</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Cláusula Final -->
+      <div class="clausula-final">Cláusula Final<br>El cumplimiento estricto de los protocolos operativos garantiza la efectividad, disciplina y control en todas las intervenciones de la Guardia Nacional, siendo de carácter obligatorio para todo el personal sin excepción.</div>
+      
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Coordinación y Conducta</span><span class="page-number">8</span></div>
+</div>
+
+  <!-- ==================== PÁGINA 9: EQUIPAMIENTO + ESCENARIOS ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">EQUIPAMIENTO · ESCENARIOS</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="article-block"><div class="article-title">VIII. EQUIPAMIENTO</div><div class="article-content"><strong>Estándar:</strong> Uniforme militar, chaleco, arma reglamentaria.<br><strong>Especializado:</strong> Equipo antidisturbios, vehículos tácticos, helicópteros (con autorización).</div></div>
+      <div class="article-block"><div class="article-title">IX. ESCENARIOS DE INTERVENCIÓN</div><ul class="functions-list"><li><strong>Nivel 1 — Bajo:</strong> Apoyo leve, supervisión.</li><li><strong>Nivel 2 — Medio:</strong> Disturbios controlados, seguridad de zonas.</li><li><strong>Nivel 3 — Alto:</strong> Crisis mayor, emergencia masiva.</li></ul></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Recursos</span><span class="page-number">9</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 10: DISPOSICIONES FINALES ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">X. DISPOSICIONES FINALES</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <ul class="principle-list">
+        <li>Todo miembro debe conocer este documento en su totalidad.</li>
+        <li>Su incumplimiento será sancionado de acuerdo con la normativa militar vigente.</li>
+        <li>El Alto Mando podrá modificar normas según necesidades operativas.</li>
+        <li>Este manual es de aplicación obligatoria para todo el personal.</li>
+      </ul>
+      <div class="golden-rule"><p>⚜️ “Disciplina que protege, fuerza que sirve” ⚜️</p></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Validez</span><span class="page-number">10</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 11: DIRECTIVAS TÁCTICAS ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">DIRECTIVAS TÁCTICAS</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="article-block"><div class="article-title">Coordinación con Fuerza Aérea</div><div class="article-content">En operaciones de alta complejidad se establecerá enlace directo con Air Force para apoyo aéreo táctico, reconocimiento y evacuación aeromédica.</div></div>
+      <div class="article-block"><div class="article-title">Procedimiento de Retirada</div><div class="article-content">La desactivación se realizará por orden del Alto Mando una vez controlada la amenaza, con relevo ordenado y restitución de zonas.</div></div>
+      <div class="info-card"><h4>Comunicación Restringida</h4><p>Durante operaciones activas se emplean frecuencias designadas. Prohibido divulgar información táctica.</p></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Doctrina</span><span class="page-number">11</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 12: GLOSARIO ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">GLOSARIO OPERATIVO</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <ul class="principle-list">
+        <li><strong>ERU:</strong> Emergency Response Unit — Respuesta a emergencias.</li>
+        <li><strong>RCU:</strong> Riot Control Unit — Control de disturbios.</li>
+        <li><strong>SSU:</strong> Security Support Unit — Seguridad estratégica.</li>
+        <li><strong>LOG:</strong> Logistics Unit — Logística.</li>
+        <li><strong>Alto Mando:</strong> General de División y Coronel de GN.</li>
+        <li><strong>Activación:</strong> Proceso autorizado para pasar a estado operativo.</li>
+        <li><strong>Uso Progresivo de la Fuerza:</strong> Escala desde presencia hasta fuerza letal.</li>
+      </ul>
+      <div class="golden-rule"><p>Disciplina, lealtad, respeto al civil y proporcionalidad: pilares irrenunciables.</p></div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Conceptos</span><span class="page-number">12</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 13: VALORES + REGLA DE ORO + LEMA ==================== -->
+  <div class="page">
+    <div class="page-header-logos" style="justify-content: center; gap: 12px; border-bottom: none;"><img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" style="height: 50px;"><span class="header-title" style="font-size: 16pt;">VALORES INSTITUCIONALES</span><img src="https://i.imgur.com/gv9TusJ.png" alt="NG" style="height: 50px;"></div>
+    <div class="page-content"><div class="stars-row"><span class="star-icon">★</span><span class="star-icon">★</span><span class="star-icon">★</span></div><div class="golden-rule"><p style="font-size: 14pt; font-weight: 700;">⚜️ REGLA DE ORO ⚜️</p><p style="font-size: 12pt;">“Proteger con firmeza, servir con lealtad, actuar con honor.”</p></div><div style="text-align: center; margin-top: 6mm;"><p style="font-family: Oswald; font-size: 18pt; color: #2d512d;">LEMA</p><p style="font-size: 14pt; font-style: italic;">“Disciplina que protege, fuerza que sirve”</p><p style="margin-top: 8mm; font-size: 10pt;">De conformidad con la normativa general de la Guardia Nacional.</p></div></div>
+    <div class="page-footer"><span class="footer-note">LSAF · Principios Eternos</span><span class="page-number">13</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 14: FIRMA Y ADVERTENCIA FINAL ==================== -->
+  <div class="page">
+    <div class="page-header-logos" style="justify-content: center; gap: 12px;"><img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" style="height: 50px;"><img src="https://i.imgur.com/gv9TusJ.png" alt="NG" style="height: 50px;"></div>
+    <div class="page-content"><div class="stars-row"><span class="star-icon">★</span><span class="star-icon">★</span><span class="star-icon">★</span></div><div class="signature-area"><p style="font-family: Oswald; font-size: 14pt;">AUTORIZADO POR EL ALTO MANDO</p><img src="https://i.imgur.com/gyQC992.png" alt="Firma oficial" class="signature-img"><p style="font-weight: 500;">General de División<br>Comandante de la Guardia Nacional</p></div><div class="warning-note">⚠️ Este manual puede sufrir cambios sin previo aviso. Se recomienda su constante revisión. El incumplimiento será sancionado.</div><div style="text-align: center; margin-top: 8mm; font-size: 9pt; color: #7c8f6a;"><p>Documento oficial de las Fuerzas Armadas de Los Santos (LSAF)</p><p>Versión Doctrinal 2025</p></div></div>
+    <div class="page-footer"><span class="footer-note">LSAF · Guardia Nacional · Sello de aprobación</span><span class="page-number">14</span></div>
+  </div>
+
+  <!-- ==================== PÁGINA 15: REGISTRO DE VERSIONES ==================== -->
+  <div class="page">
+    <div class="page-header-logos"><img src="https://i.imgur.com/FeE9uvO.png" class="logo-lsaf"><span class="header-title">REGISTRO DE VERSIONES</span><img src="https://i.imgur.com/gv9TusJ.png" class="logo-gn"></div>
+    <div class="page-content">
+      <div class="article-content">
+        <p><strong>Edición original:</strong> 2025 — Manual Operativo y Doctrinal unificado.</p>
+        <p style="margin-top: 4mm;"><strong>Descripción:</strong> Este compendio integra disposiciones generales, principios fundamentales, protocolos operativos, estructura orgánica, código de conducta y glosario.</p>
+        <p style="margin-top: 4mm;"><strong>Próxima revisión:</strong> a determinar por el Alto Mando según necesidades operativas.</p>
+        <div class="signature-area" style="margin-top: 5mm;">
+          <p style="font-family: Oswald; font-size: 12pt;">VALIDADO POR:</p>
+          <p>Coronel de Guardia Nacional<br>Jefe de Estado Mayor</p>
+        </div>
+        <div class="clausula-final">El presente manual entra en vigor desde su publicación oficial y reemplaza cualquier directiva previa no consolidada.</div>
+      </div>
+    </div>
+    <div class="page-footer"><span class="footer-note">LSAF · GN · Control documental</span><span class="page-number">15</span></div>
+  </div>
+</div>
+</body>
+</html>

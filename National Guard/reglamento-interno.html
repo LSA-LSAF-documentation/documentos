@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardia Nacional · Reglamento Interno y Disciplinario</title>
+  <style>
+    /* RESET + FUENTES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #4a5e4a;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 10px;
+    }
+
+    .manual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+    /* página A4 con altura fija (sin scroll) */
+    .page {
+      width: 210mm;
+      height: 297mm;
+      background: #fcf9ed;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 2px #b4945a, 0 0 0 6px #3f6140;
+      border-radius: 4px;
+      position: relative;
+      padding: 15mm 15mm 10mm 15mm;
+      display: flex;
+      flex-direction: column;
+      page-break-after: always;
+      break-inside: avoid;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path fill="%233b5e3b" d="M50 8 L61 38 L93 38 L67 56 L77 87 L50 70 L23 87 L33 56 L7 38 L39 38 Z" /></svg>');
+      background-repeat: repeat;
+      background-size: 60px 60px;
+      background-attachment: scroll;
+    }
+
+    .page-content {
+      flex: 1 0 auto;
+    }
+
+    /* cabecera con logos */
+    .page-header-logos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5mm;
+      border-bottom: 2px solid #c9a458;
+      padding-bottom: 3mm;
+    }
+    .logo-lsaf, .logo-gn {
+      height: 45px;
+      width: auto;
+    }
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16pt;
+      color: #3f6140;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    /* pie de página */
+    .page-footer {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      border-top: 1px dashed #c9a458;
+      padding-top: 4px;
+      font-family: 'Oswald', sans-serif;
+      color: #7c8f6a;
+      font-size: 10pt;
+    }
+    .footer-note {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .page-number {
+      font-weight: 600;
+      color: #5a7342;
+    }
+
+    /* títulos de sección */
+    .seccion-titulo {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 22pt;
+      text-transform: uppercase;
+      color: #2d512d;
+      border-left: 10px solid #c9a458;
+      padding-left: 10px;
+      margin: 6mm 0 4mm 0;
+      border-bottom: 1px solid #b8963c;
+      padding-bottom: 3px;
+    }
+
+    /* artículos */
+    .articulo {
+      margin: 3mm 0 5mm 0;
+      background: rgba(201, 164, 88, 0.05);
+      padding: 3mm 5mm;
+      border-left: 4px solid #4e6b3e;
+      border-radius: 0 4px 4px 0;
+    }
+    .articulo h3 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 16pt;
+      color: #3a5e3a;
+      margin-bottom: 2mm;
+    }
+    .articulo p, .articulo ul, .articulo ol {
+      font-size: 11.5pt;
+      line-height: 1.5;
+      margin: 2mm 0;
+      color: #1f2e1f;
+    }
+
+    /* subapartados */
+    .subapartado {
+      margin-top: 3mm;
+      margin-bottom: 2mm;
+    }
+    .subapartado h4 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14pt;
+      color: #2d512d;
+      margin-bottom: 1mm;
+      border-left: 3px solid #c9a458;
+      padding-left: 6px;
+    }
+
+    /* listas con viñeta militar */
+    .lista-simple {
+      list-style: none;
+      padding-left: 2mm;
+    }
+    .lista-simple li {
+      margin: 1mm 0;
+      font-size: 11.5pt;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .lista-simple li::before {
+      content: "⚔️";
+      color: #7e642e;
+      font-size: 9pt;
+      margin-right: 5px;
+    }
+
+    /* faltas */
+    .falta-categoria {
+      margin-top: 4mm;
+    }
+    .falta-titulo {
+      font-family: Oswald;
+      font-size: 18pt;
+      color: #1e3a1e;
+    }
+    .falta-lista {
+      background: #f2eedd;
+      padding: 3mm;
+      border-radius: 4px;
+      border-left: 6px solid #c9a458;
+    }
+
+    /* rangos y armamento */
+    .rango-item {
+      margin: 2mm 0 3mm 0;
+    }
+    .rango-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1mm;
+    }
+    .rango-imagen {
+      height: 45px;
+      width: auto;
+      object-fit: contain;
+      background: #f0ebd0;
+      border: 2px solid #b8963c;
+      border-radius: 6px;
+      padding: 2px;
+    }
+    .rango-titulo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 18pt;
+      font-weight: 600;
+      color: #1f3f1f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rango-titulo .emoji {
+      font-size: 22pt;
+    }
+    .rango-armamento {
+      background: rgba(201, 164, 88, 0.1);
+      padding: 1.5mm 4mm;
+      border-radius: 6px;
+      margin-left: 0;
+      border-left: 4px solid #b68b3c;
+    }
+    .sin-insignia {
+      height: 45px;
+      width: 45px;
+      background: #cfcfc0;
+      border: 2px dashed #7e642e;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7pt;
+      color: #2d4b2d;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      background: #2d4b2d;
+      color: #f0e2b0;
+      font-size: 10pt;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .pendiente {
+      background: #dacbaa;
+      border: 2px dashed #ab7e2f;
+      padding: 3mm;
+      margin: 3mm 0;
+      font-style: italic;
+      border-radius: 4px;
+    }
+
+    .clausula-final {
+      margin-top: 4mm;
+      padding-top: 2mm;
+      border-top: 1px dashed #b8963c;
+      font-style: italic;
+      background: #f7f3e2;
+      padding: 2mm 4mm;
+      border-radius: 6px;
+    }
+
+    /* portada (logos grandes) */
+    .portada-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15mm;
+      margin: 0 0 10mm 0;
+    }
+    .portada-logos img {
+      height: 75px;
+      width: auto;
+    }
+
+    /* ajustes para impresión: altura fija */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+      .page {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin: 0;
+        page-break-after: always;
+        height: 297mm;
+        overflow: visible;
+      }
+      .page-content {
+        overflow: visible;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="manual">
+
+  <!-- PÁGINA 1 · PORTADA -->
+  <div class="page">
+    <div class="portada-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional">
+    </div>
+    <div class="page-content" style="text-align: center;">
+      <h1 style="font-family: Oswald; font-size: 36pt; margin: 2mm 0; color: #1e3a1e;">GUARDIA NACIONAL</h1>
+      <h2 style="font-family: Oswald; font-weight: 400; font-size: 24pt; color: #b68b3c;">REGLAMENTO INTERNO</h2>
+      <h2 style="font-family: Oswald; font-weight: 300; font-size: 18pt; color: #4e6b3e;">Y DISCIPLINARIO</h2>
+      <div style="height: 2px; background: #c9a458; width: 70%; margin: 8mm auto;"></div>
+      <div style="margin-top: 10mm;">
+        <span class="badge" style="font-size: 14pt; padding: 4px 12px;">DOCUMENTO OFICIAL</span>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Los Santos Armed Forces · Reglamento</span>
+      <span class="page-number">1</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 2 · DISPOSICIONES GENERALES -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Disposiciones Generales</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">I. DISPOSICIONES GENERALES</div>
+      <div class="articulo">
+        <h3>Artículo 1 — Objetivo</h3>
+        <p>Establecer las normas de conducta, disciplina, uso de la fuerza, armamento y sanciones para todos los miembros de la Guardia Nacional.</p>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 2 — Alcance</h3>
+        <p>Este reglamento aplica a:</p>
+        <ul class="lista-simple"><li>Todo el personal activo</li><li>Reclutas en formación</li><li>Oficiales y Alto Mando</li></ul>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 3 — Carácter obligatorio</h3>
+        <p>El desconocimiento de este reglamento no exime de responsabilidad.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Marco normativo</span>
+      <span class="page-number">2</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 3 · CONDUCTA -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Conducta</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">II. CONDUCTA Y DISCIPLINA</div>
+      <div class="articulo">
+        <h3>Artículo 4 — Conducta obligatoria</h3>
+        <ul class="lista-simple"><li>Respetar la cadena de mando</li><li>Mantener disciplina militar</li><li>Actuar con profesionalismo en todo momento</li><li>Respetar civiles y otras facciones</li></ul>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 5 — Conducta en servicio</h3>
+        <ul class="lista-simple"><li>Prohibido mal comportamiento</li><li>Uso obligatorio de comunicaciones formales</li><li>Prohibido abandonar operaciones sin autorización</li></ul>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 6 — Conducta fuera de servicio</h3>
+        <ul class="lista-simple"><li>No usar equipo oficial</li><li>No representar falsamente a la Guardia Nacional</li><li>Mantener imagen institucional</li></ul>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Normas de conducta</span>
+      <span class="page-number">3</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 4 · USO DE LA FUERZA (Artículo 7) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Uso de la Fuerza (I)</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">III. USO DE LA FUERZA (Versión Ampliada)</div>
+      <div class="articulo">
+        <h3>Artículo 7 — Escala de la Fuerza</h3>
+        <p>La escala de la fuerza establece los niveles progresivos de intervención que deben aplicarse en toda situación operativa. Su finalidad es garantizar el control efectivo de una amenaza mediante el uso gradual y controlado de los medios disponibles.</p>
+        <p>El uso de la fuerza deberá seguir estrictamente el siguiente orden, salvo en situaciones donde la amenaza requiera una respuesta inmediata superior:</p>
+        <div class="subapartado"><h4>1. Presencia</h4><p>Despliegue visible en la zona, postura firme y controlada, uso del uniforme y equipamiento reglamentario. Objetivo: disuadir conductas hostiles, prevenir escalada, establecer autoridad sin intervención directa.</p></div>
+        <div class="subapartado"><h4>2. Orden Verbal</h4><p>Instrucciones claras, firmes y directas hacia individuos o grupos. Objetivo: lograr cooperación voluntaria, controlar sin contacto físico.</p></div>
+        <div class="subapartado"><h4>3. Control Físico</h4><p>Técnicas físicas para limitar o neutralizar a un individuo (inmovilización, reducción de movimientos, control corporal sin armas). Objetivo: neutralizar resistencia sin escalamiento.</p></div>
+        <div class="subapartado"><h4>4. Uso de Medios No Letales</h4><p>Dispositivos eléctricos, gas lacrimógeno, medios de dispersión, armamento de impacto controlado. Objetivo: controlar resistencia activa o disturbios, minimizar riesgos.</p></div>
+        <div class="subapartado"><h4>5. Uso de Fuerza Letal (Último Recurso)</h4><p>Armamento capaz de causar la muerte o daños graves. Solo autorizado cuando exista amenaza real, inmediata y grave contra la vida, sin alternativas viables, requiera acción urgente.</p></div>
+        <div class="clausula-final"><strong>Cláusula de Aplicación</strong><br>El personal deberá evaluar constantemente la situación para determinar si es necesario escalar o reducir el nivel de fuerza aplicado. El uso indebido o injustificado de cualquier nivel será sujeto a sanción.</div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Escala progresiva de fuerza</span>
+      <span class="page-number">4</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 5 · PRINCIPIO DE PROPORCIONALIDAD (Artículo 8) + Parte 1 de Artículo 9 -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Proporcionalidad y uso indebido (I)</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="articulo">
+        <h3>Artículo 8 — Principio de Proporcionalidad</h3>
+        <div class="subapartado"><h4>1. Justificación</h4><p>La intervención debe estar respaldada por una causa legítima: existencia de amenaza o infracción, necesidad de intervención, fundamento claro. Ninguna acción sin razón válida.</p></div>
+        <div class="subapartado"><h4>2. Proporcionalidad</h4><p>El nivel de fuerza debe corresponder al nivel de amenaza. No exceder la fuerza necesaria, adaptar la respuesta, evitar escalamiento innecesario. El uso desproporcionado es falta grave.</p></div>
+        <div class="subapartado"><h4>3. Necesidad</h4><p>La fuerza solo cuando no existan alternativas efectivas. Agotar medios preventivos, priorizar soluciones sin violencia.</p></div>
+        <div class="clausula-final"><strong>Cláusula de Control</strong><br>El incumplimiento de estos principios compromete la legitimidad de la intervención y será sujeto a evaluación disciplinaria.</div>
+      </div>
+      <div class="articulo">
+        <h3>Artículo 9 — Uso Indebido de la Fuerza</h3>
+        <div class="subapartado"><h4>1. Conductas consideradas falta grave</h4>
+          <p><strong>🔴 Disparo sin motivo justificado:</strong> uso de arma sin amenaza real, apertura de fuego sin autorización, uso impulsivo.</p>
+          <p><strong>🔴 Abuso de armamento militar:</strong> uso excesivo en situaciones menores, empleo de armas no autorizadas.</p>
+          <p><strong>🔴 Uso de la fuerza contra civiles sin causa legítima:</strong> intervención sin motivo, uso de fuerza física o armada sin necesidad.</p>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Regulación y control</span>
+      <span class="page-number">5</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 6 · USO INDEBIDO (Artículo 9, parte 2) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Uso indebido (II)</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="articulo">
+        <div class="subapartado"><h4>2. Responsabilidad</h4><p>El uso indebido será responsabilidad directa del ejecutante, evaluado por la cadena de mando, pudiendo implicar sanciones graves.</p></div>
+        <div class="subapartado"><h4>3. Evaluación posterior</h4><p>Toda intervención que implique uso de fuerza podrá ser revisada para determinar justificación, adecuación del procedimiento y cumplimiento del protocolo.</p></div>
+        <div class="clausula-final"><strong>Cláusula Final</strong><br>El uso de la fuerza es una facultad regulada y limitada. Su correcta aplicación garantiza el control de situaciones críticas; su uso indebido compromete la integridad, disciplina y legitimidad de la Guardia Nacional.</div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Responsabilidad y control</span>
+      <span class="page-number">6</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 7 · FALTAS DISCIPLINARIAS -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Faltas y sanciones</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">IV. FALTAS DISCIPLINARIAS</div>
+      <div class="falta-categoria"><div class="falta-titulo">🔹 FALTAS LEVES</div><div class="falta-lista"><ul class="lista-simple"><li>No saludar a superiores</li><li>Uso incorrecto de radio</li><li>Retrasos leves</li><li>Desorden en formación</li></ul><p><strong>Sanciones:</strong> Advertencia verbal · Llamado de atención</p></div></div>
+      <div class="falta-categoria"><div class="falta-titulo">🔹 FALTAS GRAVES</div><div class="falta-lista"><ul class="lista-simple"><li>Desobediencia directa</li><li>Abandono de servicio</li><li>Mal uso de equipo</li><li>Conducta molesta</li></ul><p><strong>Sanciones:</strong> Suspensión · Degradación · Expulsión temporal</p></div></div>
+      <div class="falta-categoria"><div class="falta-titulo">🔹 FALTAS MUY GRAVES</div><div class="falta-lista"><ul class="lista-simple"><li>Abuso de poder</li><li>Uso de fuerza letal sin justificación</li><li>Corrupción</li><li>Romper completamente el rol</li></ul><p><strong>Sanciones:</strong> Expulsión permanente · Ban de facción · Reporte administrativo</p></div></div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Tipificación de faltas</span>
+      <span class="page-number">7</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 8 · SISTEMA DE SANCIONES + TRIBUNAL MILITAR -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Sanciones y tribunal</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">V. SISTEMA DE SANCIONES</div>
+      <p><strong>Tipos:</strong> Advertencia · Suspensión · Degradación · Expulsión</p>
+      <div class="articulo"><h3>Artículo 10 — Acumulación</h3><p>3 faltas leves = 1 grave<br>2 graves = evaluación de expulsión</p></div>
+      <div class="seccion-titulo">VI. TRIBUNAL MILITAR</div>
+      <p><strong>Composición:</strong></p>
+      <ul class="lista-simple"><li>Coronel (Presidente)</li><li>Mayor (Evaluador)</li><li>Capitán (Testigo operativo)</li></ul>
+      <p><strong>Funciones:</strong> Evaluar faltas graves, escuchar pruebas, dictar sanción.</p>
+      <p><strong>Procedimiento:</strong> Reporte → Investigación → Audiencia → Veredicto</p>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Justicia militar</span>
+      <span class="page-number">8</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 9 · CADENA DE MANDO + ARMAMENTO (Recluta, Soldado, Cabo) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Cadena y armamento (I)</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">VII. CADENA DE MANDO</div>
+      <div class="articulo"><h3>Artículo 11</h3><p>Queda prohibido: saltarse superiores, dar órdenes sin rango, contradecir órdenes en operación.</p></div>
+      <div class="seccion-titulo">VIII. ARMAMENTO POR RANGOS</div>
+      <p><em>Adaptado a estructura real de la Guardia Nacional</em></p>
+      <div class="rango-item"><div class="rango-header"><div class="sin-insignia">SIN INSIGNIA</div><span class="rango-titulo"><span class="emoji">⚪</span> Recluta</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Taser (opcional)</li><li>Linterna</li><li>🚫 Sin armas largas</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/3TRuAet.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">⚪</span> Soldado</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Combat Pistol</li><li>SMG</li><li>Chaleco ligero</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/R55E5z5.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔵</span> Cabo</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Combat Pistol</li><li>SMG</li><li>Carbine Rifle</li><li>Linterna</li></ul></div></div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Armamento básico</span>
+      <span class="page-number">9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 10 · ARMAMENTO (Sargento, Sargento Primero, Teniente, Capitán) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Armamento (II)</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/JwrHYiC.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔵</span> Sargento</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Combat Pistol</li><li>Carbine Rifle</li><li>Pump Shotgun</li><li>Mira holográfica</li><li>Granadas de humo (autorizadas)</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/mzOkSdk.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔵</span> Sargento Primero</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Combat Pistol</li><li>Carbine Rifle</li><li>Pump Shotgun</li><li>Accesorios completos</li><li>Granadas tácticas</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/7oQ8NiO.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Teniente</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Heavy Pistol</li><li>Special Carbine</li><li>Shotgun táctica</li><li>Mira ACOG</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/cwOGp1i.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Capitán</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Heavy Pistol</li><li>Special Carbine</li><li>Bullpup Shotgun</li><li>Granadas flash / humo</li></ul></div></div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Armamento intermedio</span>
+      <span class="page-number">10</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 11 · ARMAMENTO (Mayor, Teniente Coronel, Coronel, General) + USO DE ARMAMENTO -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Armamento (III)</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/aYjrwzn.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Mayor</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Heavy Pistol</li><li>Advanced Rifle</li><li>Marksman Rifle</li><li>Binoculares</li><li>Radio avanzada</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/zvRlV70.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🟠</span> Teniente Coronel</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Heavy Pistol</li><li>Special Carbine MK II</li><li>Sniper Rifle</li><li>Uso limitado de explosivos</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/22593Jq.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔴</span> Coronel</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Heavy Pistol / Pistol MK II</li><li>Carbine Rifle MK II</li><li>Heavy Sniper</li><li>Equipo completo de mando</li></ul></div></div>
+      <div class="rango-item"><div class="rango-header"><img src="https://i.imgur.com/mmBojZc.png" class="rango-imagen"><span class="rango-titulo"><span class="emoji">🔴</span> General</span></div><div class="rango-armamento"><ul class="lista-simple"><li>Acceso total a armamento</li><li>Autorización especial</li></ul></div></div>
+      <div class="seccion-titulo" style="margin-top: 3mm;">IX. USO DE ARMAMENTO</div>
+      <p><strong>Prohibiciones:</strong> Usar armas no autorizadas por rango, compartir armamento, uso fuera de servicio.</p>
+      <p><strong>Control:</strong> Todo armamento debe ser registrado. Supervisión por oficiales.</p>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Armamento superior y control</span>
+      <span class="page-number">11</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 12 · APARTADOS RESERVADOS (pendientes) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Apartados en desarrollo</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">X. APARTADOS RESERVADOS (EN CONSTRUCCIÓN)</div>
+      <div class="pendiente"><strong>🪖 FUERZAS TERRESTRES</strong> — Organización, vehículos, estrategias, protocolos.</div>
+      <div class="pendiente"><strong>✈️ FUERZAS AÉREAS</strong> — Helicópteros, aviones, pilotos, operaciones aéreas.</div>
+      <div class="pendiente"><strong>👕 UNIFORMES</strong> — Uniforme por rango, uniforme por unidad, uso obligatorio.</div>
+      <div class="pendiente"><strong>🔫 ARMAMENTO AVANZADO</strong> — Armamento especial, explosivos, equipamiento táctico.</div>
+      <div class="pendiente"><strong>🚛 VEHÍCULOS</strong> — Tipos, uso por rango, autorizaciones.</div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Documentación en desarrollo</span>
+      <span class="page-number">12</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 13 · DISPOSICIONES FINALES -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Disposiciones finales</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">XI. DISPOSICIONES FINALES</div>
+      <ul class="lista-simple">
+        <li>Este reglamento es de cumplimiento obligatorio</li>
+        <li>Puede ser modificado por el Alto Mando</li>
+        <li>Todo miembro debe conocerlo</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Obligaciones finales</span>
+      <span class="page-number">13</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 14 · REGLA DE ORO -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 10mm;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf" style="height: 45px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn" style="height: 45px;">
+    </div>
+    <div class="page-content" style="text-align: center;">
+      <div style="font-size: 30pt; font-family: Oswald; color: #3f6140; margin-top: 15mm;">★ ★ ★</div>
+      <p style="font-size: 28pt; font-family: Oswald; margin: 10mm 0; color: #1d4a1d;">XII. REGLA DE ORO</p>
+      <p style="font-size: 20pt; font-family: Oswald; background: #c9a45820; padding: 8mm; border: 4px double #c9a458; max-width: 140mm; margin: 0 auto;">
+        “Ninguna acción será ejecutada sin justificación,<br> fuera de la cadena de mando<br> o en exceso de la fuerza necesaria.”
+      </p>
+      <div style="margin-top: 20mm;">
+        <p style="font-size: 12pt;">Guardia Nacional · Los Santos Armed Forces</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Lealtad · Disciplina · Honor</span>
+      <span class="page-number">14</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 15 · JURAMENTO Y FIRMA (parte 1) -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 10mm;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf" style="height: 45px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn" style="height: 45px;">
+    </div>
+    <div class="page-content">
+      <div style="text-align: center; margin-top: 15mm;">
+        <div style="font-size: 30pt; font-family: Oswald; color: #3f6140;">★ ★ ★</div>
+        <p style="font-size: 20pt; font-family: Oswald; margin: 8mm 0; color: #2d4b2d;">GUARDIA NACIONAL</p>
+        <p style="font-size: 14pt; max-width: 120mm; margin: 0 auto;">"Juro defender la Constitución, servir al pueblo y actuar con honor, dentro y fuera del campo de batalla."</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Juramento</span>
+      <span class="page-number">15</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 16 · FIRMA -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 10mm;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf" style="height: 45px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn" style="height: 45px;">
+    </div>
+    <div class="page-content">
+      <div style="text-align: center; margin-top: 15mm;">
+        <div style="border: 2px solid #c9a458; width: 70mm; margin: 15mm auto; padding: 6mm 4mm; text-align: center; background-color: #fef9ea; border-radius: 4px;">
+          <p style="font-family: Oswald; font-size: 12pt; margin-bottom: 4mm; color: #3f6140;">Alto Mando LSAF</p>
+          <div style="margin: 3mm 0;"><img src="https://i.imgur.com/gyQC992.png" alt="Firma" style="max-width: 50mm; height: auto; display: block; margin: 0 auto;"></div>
+          <p style="font-family: 'Oswald', sans-serif; font-size: 12pt; font-weight: 600; margin: 4mm 0 2mm 0;">David Toro Coronel</p>
+        </div>
+        <p style="margin-top: 10mm; font-size: 10pt;">Este reglamento es de conocimiento obligatorio para todo miembro activo.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Edición revisada · Los Santos Armed Forces</span>
+      <span class="page-number">16</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

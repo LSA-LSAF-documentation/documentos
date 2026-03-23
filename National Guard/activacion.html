@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardia Nacional · Sistema de Activación Operativa</title>
+  <style>
+    /* RESET + FUENTES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #4a5e4a;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 10px;
+    }
+
+    .manual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+
+    /* cada página A4 */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fcf9ed;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 2px #b4945a, 0 0 0 6px #3f6140;
+      border-radius: 4px;
+      padding: 15mm 15mm 10mm 15mm;
+      display: flex;
+      flex-direction: column;
+      page-break-after: always;
+      break-inside: avoid;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path fill="%233b5e3b" d="M50 8 L61 38 L93 38 L67 56 L77 87 L50 70 L23 87 L33 56 L7 38 L39 38 Z" /></svg>');
+      background-repeat: repeat;
+      background-size: 60px 60px;
+    }
+
+    /* encabezado con logos institucionales */
+    .page-header-logos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5mm;
+      border-bottom: 2px solid #c9a458;
+      padding-bottom: 3mm;
+    }
+    .logo-lsaf {
+      height: 40px;
+      width: auto;
+    }
+    .logo-gn {
+      height: 45px;
+      width: auto;
+    }
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16pt;
+      color: #3f6140;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    /* contenido principal */
+    .page-content {
+      flex: 1 0 auto;
+    }
+
+    /* pie de página */
+    .page-footer {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      border-top: 1px dashed #c9a458;
+      padding-top: 4px;
+      font-family: 'Oswald', sans-serif;
+      color: #7c8f6a;
+      font-size: 10pt;
+    }
+    .footer-note {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .page-number {
+      font-weight: 600;
+      color: #5a7342;
+    }
+
+    /* títulos de sección */
+    .seccion-titulo {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 22pt;
+      text-transform: uppercase;
+      color: #2d512d;
+      border-left: 10px solid #c9a458;
+      padding-left: 10px;
+      margin: 6mm 0 4mm 0;
+      border-bottom: 1px solid #b8963c;
+      padding-bottom: 3px;
+    }
+
+    /* artículos */
+    .articulo {
+      margin: 3mm 0 5mm 0;
+      background: rgba(201, 164, 88, 0.05);
+      padding: 3mm 5mm;
+      border-left: 4px solid #4e6b3e;
+      border-radius: 0 4px 4px 0;
+    }
+    .articulo h3 {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 16pt;
+      color: #3a5e3a;
+      margin-bottom: 2mm;
+    }
+    .articulo p {
+      font-size: 11.5pt;
+      line-height: 1.5;
+      margin: 2mm 0;
+      color: #1f2e1f;
+    }
+
+    /* listas con viñeta militar */
+    .lista-simple {
+      list-style: none;
+      padding-left: 2mm;
+    }
+    .lista-simple li {
+      margin: 1mm 0;
+      font-size: 11.5pt;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .lista-simple li::before {
+      content: "⚔️";
+      color: #7e642e;
+      font-size: 9pt;
+      margin-right: 5px;
+    }
+
+    /* estilo para mostrar rangos con insignia */
+    .rango-miniatura {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0ebd0;
+      border: 1px solid #b8963c;
+      border-radius: 20px;
+      padding: 2px 10px 2px 5px;
+      margin: 2px 0;
+    }
+    .rango-miniatura img {
+      height: 30px;
+      width: auto;
+      border-radius: 4px;
+    }
+    .rango-miniatura span {
+      font-weight: 600;
+      color: #1f3f1f;
+    }
+
+    /* tabla de niveles de alerta (DEFCON style) */
+    .nivel-alerta {
+      display: flex;
+      flex-direction: column;
+      gap: 3mm;
+      margin: 4mm 0;
+    }
+    .nivel-item {
+      display: flex;
+      align-items: flex-start;
+      background: #f3f0e2;
+      border-left: 10px solid;
+      padding: 3mm;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 2px 2px 0 #768d5c;
+    }
+    .nivel-color {
+      width: 40px;
+      font-size: 20px;
+      text-align: center;
+    }
+    .nivel-contenido {
+      flex: 1;
+      padding-left: 4mm;
+    }
+    .nivel-titulo {
+      font-family: Oswald;
+      font-size: 18pt;
+      font-weight: 600;
+    }
+    .nivel-desc {
+      font-size: 11pt;
+    }
+
+    .badge {
+      background: #2d4b2d;
+      color: #f0e2b0;
+      font-size: 10pt;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* para apartados pendientes */
+    .pendiente {
+      background: #dacbaa;
+      border: 2px dashed #ab7e2f;
+      padding: 2mm;
+      margin: 2mm 0;
+      font-style: italic;
+    }
+
+    /* tabla de autorización */
+    .tabla-autorizacion {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 4mm 0;
+      background: #efebd5;
+      border: 2px solid #7b965b;
+    }
+    .tabla-autorizacion th {
+      background: #3f6140;
+      color: #fcf0c0;
+      padding: 3mm;
+      font-family: Oswald;
+      font-weight: 400;
+      font-size: 12pt;
+      border: 1px solid #c9a458;
+    }
+    .tabla-autorizacion td {
+      border: 1px solid #9baf7a;
+      padding: 2.5mm;
+      font-size: 11pt;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="manual">
+
+  <!-- PÁGINA 1 · PORTADA + OBJETIVO + PRINCIPIO + NIVELES (inicio) -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 15mm;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf" style="height: 70px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn" style="height: 80px;">
+    </div>
+    <div class="page-content" style="text-align: center;">
+      <h1 style="font-family: Oswald; font-size: 32pt; margin: 2mm 0; color: #1e3a1e;">SISTEMA DE ACTIVACIÓN</h1>
+      <h1 style="font-family: Oswald; font-size: 28pt; margin: 0; color: #1e3a1e;">OPERATIVA</h1>
+      <div style="display: flex; justify-content: center; gap: 5mm; align-items: center; margin: 5mm 0;">
+        <span style="font-family: Oswald; font-size: 22pt; color: #3f6140;">GUARDIA NACIONAL</span>
+      </div>
+      <h2 style="font-family: Oswald; font-weight: 400; font-size: 18pt; color: #b68b3c;">LSAF</h2>
+      <div style="height: 2px; background: #c9a458; width: 70%; margin: 8mm auto;"></div>
+      <div style="margin-top: 5mm;">
+        <span class="badge" style="font-size: 14pt; padding: 4px 12px;">DOCTRINA DE DESPLIEGUE</span>
+      </div>
+
+      <div class="seccion-titulo" style="margin-top: 8mm;">I. OBJETIVO DEL SISTEMA</div>
+      <p style="font-size: 12pt;">Regular la activación, despliegue y uso de la Guardia Nacional dentro del servidor, asegurando: realismo, control del poder militar, balance RP, uso estratégico.</p>
+
+      <div class="seccion-titulo">II. PRINCIPIO FUNDAMENTAL</div>
+      <div style="background:#eef2e2; padding:4mm; border-left:6px solid #c9a458;">
+        <p style="font-size: 16pt; font-family: Oswald; text-align: center;">“La Guardia Nacional NO está activa permanentemente.”</p>
+        <p style="text-align: center;">Solo se despliega en situaciones justificadas.</p>
+      </div>
+
+      <div class="seccion-titulo">III. NIVELES DE ALERTA</div>
+      <p><em>Sistema tipo DEFCON</em></p>
+      <!-- Primer nivel: 5 -->
+      <div class="nivel-item" style="border-left-color: #2e7d32;">
+        <div class="nivel-color">🟢</div>
+        <div class="nivel-contenido">
+          <span class="nivel-titulo">NIVEL 5 — NORMAL</span>
+          <div class="nivel-desc">Estado: Sin amenazas activas. GN: ❌ NO desplegada, ❌ No visible en mapa. Uso: Entrenamientos, Base militar.</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Los Santos Armed Forces · Activación</span>
+      <span class="page-number">1 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 2 · NIVELES (continuación) + AUTORIZACIÓN -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Niveles de alerta</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <!-- Nivel 4 -->
+      <div class="nivel-item" style="border-left-color: #1976d2;">
+        <div class="nivel-color">🔵</div>
+        <div class="nivel-contenido">
+          <span class="nivel-titulo">NIVEL 4 — PREVENCIÓN</span>
+          <div class="nivel-desc">Estado: Riesgo leve. GN: ⚠️ Preparación en base, ❌ No despliegue activo. Ejemplo: Eventos sospechosos, inteligencia previa.</div>
+        </div>
+      </div>
+      <!-- Nivel 3 -->
+      <div class="nivel-item" style="border-left-color: #ed6c02;">
+        <div class="nivel-color">🟡</div>
+        <div class="nivel-contenido">
+          <span class="nivel-titulo">NIVEL 3 — ALERTA</span>
+          <div class="nivel-desc">Estado: Situación en desarrollo. GN: ✅ Despliegue limitado, ✅ Unidades específicas. Ejemplo: Disturbios medianos, apoyo policial.</div>
+        </div>
+      </div>
+      <!-- Nivel 2 -->
+      <div class="nivel-item" style="border-left-color: #d97706;">
+        <div class="nivel-color">🟠</div>
+        <div class="nivel-contenido">
+          <span class="nivel-titulo">NIVEL 2 — CRISIS</span>
+          <div class="nivel-desc">Estado: Amenaza seria. GN: ✅ Despliegue activo, ✅ Coordinación con Air Force. Ejemplo: Ataques organizados, desastre mayor.</div>
+        </div>
+      </div>
+      <!-- Nivel 1 -->
+      <div class="nivel-item" style="border-left-color: #b71c1c;">
+        <div class="nivel-color">🔴</div>
+        <div class="nivel-contenido">
+          <span class="nivel-titulo">NIVEL 1 — EMERGENCIA TOTAL</span>
+          <div class="nivel-desc">Estado: Situación crítica. GN: 🔥 Activación total, control territorial, operación conjunta completa. Ejemplo: Evento masivo, caos total.</div>
+        </div>
+      </div>
+
+      <div class="seccion-titulo">IV. AUTORIZACIÓN DE ACTIVACIÓN</div>
+      <p><strong>Quién puede activar:</strong></p>
+      <table class="tabla-autorizacion">
+        <tr><th>Rango</th><th>Nivel permitido</th></tr>
+        <tr><td>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/mmBojZc.png" alt="General"><span>General</span></div>
+        </td><td>Todos</td></tr>
+        <tr><td>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/22593Jq.png" alt="Coronel"><span>Coronel</span></div>
+        </td><td>Nivel 3-2-1</td></tr>
+        <tr><td>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/aYjrwzn.png" alt="Mayor"><span>Mayor</span></div>
+        </td><td>Nivel 3</td></tr>
+        <tr><td>
+          <div class="rango-miniatura"><img src="https://i.imgur.com/cwOGp1i.png" alt="Capitán"><span>Capitán</span></div>
+        </td><td>Solicitud únicamente</td></tr>
+      </table>
+      <p><strong>Proceso:</strong> Evaluación de situación → Solicitud de activación → Aprobación → Despliegue.</p>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Autorización por rango</span>
+      <span class="page-number">2 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 3 · TIPOS DE ACTIVACIÓN + TIEMPO + ZONAS -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Tipos y zonas</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">V. TIPOS DE ACTIVACIÓN</div>
+      <ul class="lista-simple">
+        <li><strong>🔹 Activación Administrativa:</strong> Por eventos del servidor, controlada por staff.</li>
+        <li><strong>🔹 Activación RP:</strong> Por situación real dentro del juego.</li>
+        <li><strong>🔹 Activación Automática:</strong> Basada en eventos definidos.</li>
+      </ul>
+
+      <div class="seccion-titulo">VI. TIEMPO DE DESPLIEGUE</div>
+      <p><strong>Reglas:</strong> No aparición instantánea. Tiempo mínimo de preparación: 5–10 minutos RP. Objetivo: evitar powergaming, mantener realismo.</p>
+
+      <div class="seccion-titulo">VII. ZONAS DE OPERACIÓN</div>
+      <p><strong>Definición:</strong> El Alto Mando define: zona activa, perímetro, objetivos.</p>
+      <p><strong>Tipos:</strong></p>
+      <ul class="lista-simple">
+        <li>🔴 Zona caliente</li>
+        <li>🟡 Zona controlada</li>
+        <li>🟢 Zona segura</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Tiempo y áreas</span>
+      <span class="page-number">3 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 4 · REGLAS DE DESPLIEGUE + FINALIZACIÓN + EVENTOS COMPATIBLES -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Ejecución y cierre</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">VIII. REGLAS DE DESPLIEGUE</div>
+      <p><strong>Obligatorio:</strong> Uso de vehículos oficiales, equipamiento completo, comunicación activa.</p>
+      <p><strong>Prohibido:</strong> Spawn sin rol, apariciones sin contexto, actuar sin orden.</p>
+
+      <div class="seccion-titulo">IX. FINALIZACIÓN DE OPERACIÓN</div>
+      <p><strong>Proceso:</strong> Control de situación → Retirada progresiva → Informe final.</p>
+      <p><strong>Regla:</strong> GN debe retirarse cuando ya no sea necesaria.</p>
+
+      <div class="seccion-titulo">X. EVENTOS COMPATIBLES</div>
+      <p><strong>Activan Guardia Nacional:</strong> Disturbios masivos, ataques organizados, desastres naturales, eventos militares, caos urbano.</p>
+      <p><strong>NO activan:</strong> Robos pequeños, persecuciones normales, situaciones policiales básicas.</p>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Eventos y reglas</span>
+      <span class="page-number">4 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 5 · SISTEMA ANTI-ABUSO + ALERTA GLOBAL + INTEGRACIÓN AF -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Control y coordinación</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">XI. SISTEMA ANTI-ABUSO</div>
+      <p><strong>Reglas clave:</strong> GN no reemplaza a la policía, uso limitado de fuerza militar, no intervenir sin justificación.</p>
+      <p><strong>Sanciones:</strong> Suspensión, degradación, expulsión.</p>
+
+      <div class="seccion-titulo">XII. SISTEMA DE ALERTA GLOBAL</div>
+      <p><em>Ejemplo de anuncio:</em> “ALERTA NIVEL 3 ACTIVADA” / “GUARDIA NACIONAL DESPLEGADA”.</p>
+      <p><strong>Efecto RP:</strong> Genera ambiente, aumenta tensión, organiza a las facciones.</p>
+
+      <div class="seccion-titulo">XIII. INTEGRACIÓN CON AIR FORCE</div>
+      <p><strong>Según nivel:</strong></p>
+      <table class="tabla-autorizacion">
+        <tr><th>Nivel</th><th>Air Force</th></tr>
+        <tr><td>5</td><td>❌</td></tr>
+        <tr><td>4</td><td>⚠️ Preparación</td></tr>
+        <tr><td>3</td><td>Apoyo limitado</td></tr>
+        <tr><td>2</td><td>Apoyo activo</td></tr>
+        <tr><td>1</td><td>Operación total</td></tr>
+      </table>
+      <div style="display: flex; justify-content: center; gap: 8px; margin-top: 3mm;">
+        <img src="https://i.imgur.com/gv9TusJ.png" alt="GN" style="height: 35px;">
+        <span style="font-size: 20px;">+</span>
+        <img src="https://i.imgur.com/GfmYqNX.png" alt="AF" style="height: 35px;">
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Coordinación aérea</span>
+      <span class="page-number">5 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 6 · ESCALAMIENTO + APARTADOS RESERVADOS + DISPOSICIONES FINALES -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Desarrollo y cierre</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content">
+      <div class="seccion-titulo">XIV. ESCALAMIENTO DE EVENTOS</div>
+      <p><strong>Ejemplo real RP:</strong> Protesta → Nivel 3 → Se vuelve violenta → Nivel 2 → Caos total → Nivel 1.</p>
+
+      <div class="seccion-titulo">XV. APARTADOS RESERVADOS</div>
+      <div class="pendiente">
+        <p><strong>🧠 SISTEMA AUTOMÁTICO</strong> — [PENDIENTE DE DESARROLLO] Scripts, activaciones automáticas, integración con logs.</p>
+      </div>
+      <div class="pendiente">
+        <p><strong>🎮 EVENTOS DEL SERVIDOR</strong> — [PENDIENTE DE DESARROLLO] Eventos programados, eventos sorpresa.</p>
+      </div>
+
+      <div class="seccion-titulo">XVI. DISPOSICIONES FINALES</div>
+      <ul class="lista-simple">
+        <li>El Alto Mando regula todo el sistema.</li>
+        <li>El abuso será sancionado.</li>
+        <li>Este sistema garantiza el equilibrio RP.</li>
+      </ul>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Normas finales</span>
+      <span class="page-number">6 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 7 · RESUMEN VISUAL DE NIVELES (infografía simple) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Escalado de alertas</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content" style="display: flex; flex-direction: column; justify-content: center;">
+      <div style="text-align: center; font-size: 20pt; font-family: Oswald;">DEFCON ESTILO GN</div>
+      <div style="display: flex; flex-direction: column; gap: 3mm; margin-top: 8mm;">
+        <div style="display: flex; align-items: center; background: #e8f0e0; padding: 2mm;"><span style="font-size: 24px; width: 40px;">🟢</span><span style="flex:1;">Nivel 5 - Normal: Sin despliegue</span></div>
+        <div style="display: flex; align-items: center; background: #e8f0e0; padding: 2mm;"><span style="font-size: 24px; width: 40px;">🔵</span><span style="flex:1;">Nivel 4 - Prevención: Preparación</span></div>
+        <div style="display: flex; align-items: center; background: #e8f0e0; padding: 2mm;"><span style="font-size: 24px; width: 40px;">🟡</span><span style="flex:1;">Nivel 3 - Alerta: Despliegue limitado</span></div>
+        <div style="display: flex; align-items: center; background: #e8f0e0; padding: 2mm;"><span style="font-size: 24px; width: 40px;">🟠</span><span style="flex:1;">Nivel 2 - Crisis: Despliegue activo + AF</span></div>
+        <div style="display: flex; align-items: center; background: #e8f0e0; padding: 2mm;"><span style="font-size: 24px; width: 40px;">🔴</span><span style="flex:1;">Nivel 1 - Emergencia total: Activación total</span></div>
+      </div>
+      <div style="margin-top: 8mm; text-align: center;">
+        <span class="badge" style="background:#3f6140;">Autorización por rango</span>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Tabla de niveles</span>
+      <span class="page-number">7 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 8 · ESQUEMA DE INTEGRACIÓN CON AIR FORCE (logos) -->
+  <div class="page">
+    <div class="page-header-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf">
+      <span class="header-title">Sinergia con Air Force</span>
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn">
+    </div>
+    <div class="page-content" style="display: flex; flex-direction: column; justify-content: center;">
+      <div style="text-align: center; font-family: Oswald; font-size: 28pt; color: #3f6140; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <img src="https://i.imgur.com/gv9TusJ.png" alt="GN" style="height: 60px;">
+        <span style="font-size: 30pt;">+</span>
+        <img src="https://i.imgur.com/GfmYqNX.png" alt="AF" style="height: 60px;">
+      </div>
+
+      <div style="display: flex; justify-content: space-around; align-items: center; margin: 10mm 0;">
+        <div style="text-align: center; flex: 1;">
+          <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" style="height: 80px;">
+          <p style="font-weight: bold; font-size: 16pt;">Guardia Nacional</p>
+          <p>Terrestre · Control · Rescate</p>
+        </div>
+        <div style="font-size: 30pt; color: #c9a458;">&</div>
+        <div style="text-align: center; flex: 1;">
+          <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" style="height: 80px;">
+          <p style="font-weight: bold; font-size: 16pt;">Air Force</p>
+          <p>Aéreo · Apoyo · Evacuación</p>
+        </div>
+      </div>
+
+      <div style="background: #eef2e2; padding: 5mm; border: 2px solid #c9a458; border-radius: 8px; text-align: center;">
+        <p style="font-family: Oswald; font-size: 18pt;">“Unidos por la superioridad operativa”</p>
+      </div>
+      <div style="margin-top: 10mm; text-align: center;">
+        <span class="badge">Mando conjunto</span>
+        <span class="badge">Comunicación</span>
+        <span class="badge">Apoyo mutuo</span>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Sinergia operativa</span>
+      <span class="page-number">8 / 9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 9 · CIERRE CON LEMA -->
+  <div class="page">
+    <div class="page-header-logos" style="border-bottom: none; justify-content: center; gap: 10mm;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" class="logo-lsaf" style="height: 45px;">
+      <img src="https://i.imgur.com/gv9TusJ.png" alt="Guardia Nacional" class="logo-gn" style="height: 55px;">
+    </div>
+    <div class="page-content" style="text-align: center;">
+      <div style="font-size: 30pt; font-family: Oswald; color: #3f6140; margin-top: 20mm;">★ ★ ★</div>
+      <p style="font-size: 28pt; font-family: Oswald; margin: 10mm 0; color: #1d4a1d;">ACTIVACIÓN</p>
+      <p style="font-size: 22pt; font-family: Oswald; background: #c9a45820; padding: 8mm; border: 4px double #c9a458; max-width: 140mm; margin: 0 auto;">
+        “No es poder,<br>es responsabilidad.”
+      </p>
+      <div style="margin-top: 15mm;">
+        <p style="font-size: 12pt;">Guardia Nacional · Los Santos Armed Forces</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Lealtad · Disciplina · Honor</span>
+      <span class="page-number">9 / 9</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

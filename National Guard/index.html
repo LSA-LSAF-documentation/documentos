@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATC · Documentación Oficial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            background: linear-gradient(135deg, #1a2a36 0%, #0f1a22 100%);
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #f5f7fc;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 32pt;
+            color: #1f4b6e;
+            border-left: 6px solid #c4a747;
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #5a7d9a;
+            margin-bottom: 30px;
+            margin-left: 26px;
+            font-size: 11pt;
+        }
+        .document-list {
+            list-style: none;
+        }
+        .document-list li {
+            margin-bottom: 15px;
+        }
+        .document-list a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            padding: 18px 24px;
+            background: white;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            border: 1px solid #d4e0ea;
+        }
+        .document-list a:hover {
+            transform: translateX(8px);
+            border-color: #c4a747;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: #fffef8;
+        }
+        .doc-icon {
+            font-size: 36px;
+        }
+        .doc-info {
+            flex: 1;
+        }
+        .doc-title {
+            font-weight: 700;
+            font-size: 18pt;
+            color: #1f6392;
+            font-family: 'Oswald', sans-serif;
+        }
+        .doc-description {
+            font-size: 11pt;
+            color: #5a7d9a;
+            margin-top: 5px;
+        }
+        .doc-badge {
+            background: #c4a747;
+            color: #1f4b6e;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 10pt;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #d4e0ea;
+            color: #8aa0b5;
+            font-size: 9pt;
+        }
+        .version {
+            margin-top: 10px;
+            font-size: 8pt;
+        }
+        @media print {
+            body {
+                visibility: hidden;
+            }
+        }
+        
+        /* Protecciones */
+        ::selection {
+            background: transparent;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>📡 ATC · DOCUMENTACIÓN OFICIAL</h1>
+    <div class="subtitle">Fuerza Aérea · Material de referencia autorizado</div>
+    
+    <ul class="document-list">
+        <!-- DOCUMENTO 1: DIAGRAMA DE PISTAS -->
+        <li>
+            <a href="diagramas-pistas.html">
+                <div class="doc-icon">✈️</div>
+                <div class="doc-info">
+                    <div class="doc-title">Diagrama de Pistas de Aterrizaje</div>
+                    <div class="doc-description">Cartas aeronáuticas oficiales · Fort Zancudo · LSIA · Cayo Perico · USS Independence · Sandy Shores</div>
+                </div>
+                <div class="doc-badge">PRINCIPAL</div>
+            </a>
+        </li>
+        
+        <!-- DOCUMENTO 2: COMUNICACIONES ATC -->
+        <li>
+            <a href="comunicaciones-atc.html">
+                <div class="doc-icon">📻</div>
+                <div class="doc-info">
+                    <div class="doc-title">Comunicaciones ATC</div>
+                    <div class="doc-description">Fraseología aeronáutica · Protocolos de radio · Códigos y procedimientos de comunicación</div>
+                </div>
+                <div class="doc-badge">GUÍA</div>
+            </a>
+        </li>
+    </ul>
+    
+    <div class="footer">
+        Fuerza Aérea · Documentación Oficial ATC<br>
+        <div class="version">Versión 1.0 · Marzo 2026</div>
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // BLOQUEO COMPLETO DE SEGURIDAD
+    // ============================================
+    
+    // 1. Bloquear clic derecho
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // 2. Bloquear combinaciones de teclado para desarrolladores
+    document.addEventListener('keydown', function(e) {
+        // Bloquear F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+Shift+I (abrir inspector)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+Shift+J (abrir consola)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+Shift+C (inspeccionar elemento)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+U (ver código fuente)
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+S (guardar página)
+        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+P (imprimir)
+        if (e.ctrlKey && (e.key === 'P' || e.key === 'p')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+C (copiar)
+        if (e.ctrlKey && (e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+X (cortar)
+        if (e.ctrlKey && (e.key === 'X' || e.key === 'x')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+V (pegar)
+        if (e.ctrlKey && (e.key === 'V' || e.key === 'v')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+A (seleccionar todo)
+        if (e.ctrlKey && (e.key === 'A' || e.key === 'a')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // 3. Prevenir arrastre de imágenes y elementos
+    window.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // 4. Deshabilitar selección de texto adicionalmente con JavaScript
+    document.onselectstart = function() { return false; };
+    document.onmousedown = function(e) {
+        // Permitir interacción normal con elementos interactivos si los hubiera
+        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+            return true;
+        }
+        return true;
+    };
+    
+    // 5. Detectar apertura de consola y mostrar advertencia (opcional)
+    // Detección básica de consola abierta
+    (function() {
+        const devtools = /./;
+        devtools.toString = function() {
+            console.log('%c⚠️ DOCUMENTO PROTEGIDO ⚠️', 'color: red; font-size: 18px; font-weight: bold;');
+            console.log('%cNo está autorizado el uso de herramientas de desarrollo', 'color: orange; font-size: 14px;');
+            return 'protected';
+        };
+        console.log(devtools);
+    })();
+    
+    // 6. Prevenir que se pueda copiar texto desde el contexto del navegador
+    document.body.addEventListener('copy', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    document.body.addEventListener('cut', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // 7. Deshabilitar tecla de menú (contexto del teclado)
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ContextMenu' || e.keyCode === 93) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // 8. Limpiar consola periódicamente (opcional, para dificultar debugging)
+    // setInterval(function() {
+    //     console.clear();
+    // }, 1000);
+    
+    // 9. Prevenir que se pueda ver el código mediante eventos
+    window.addEventListener('beforeunload', function() {
+        // No hacer nada, solo prevención
+    });
+    
+    // 10. Mensaje en consola de advertencia
+    console.log('%c🚫 DOCUMENTO CONFIDENCIAL - ACCESO NO AUTORIZADO 🚫', 'color: red; font-size: 16px; font-weight: bold; background: black; padding: 4px;');
+    console.log('%cEl uso de herramientas de desarrollo está prohibido', 'color: orange; font-size: 12px;');
+    
+    // 11. Bloquear que se pueda hacer clic derecho en imágenes
+    const allImages = document.querySelectorAll('img');
+    allImages.forEach(img => {
+        img.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        img.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    });
+</script>
+</body>
+</html>
