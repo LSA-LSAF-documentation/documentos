@@ -9,9 +9,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
         }
         body {
-            background: #1a2a36;
+            background: linear-gradient(135deg, #1a2a36 0%, #0f1a22 100%);
             font-family: 'Roboto', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -33,69 +35,84 @@
             color: #1f4b6e;
             border-left: 6px solid #c4a747;
             padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #5a7d9a;
             margin-bottom: 30px;
+            margin-left: 26px;
+            font-size: 11pt;
         }
         .document-list {
             list-style: none;
         }
         .document-list li {
             margin-bottom: 15px;
-            border-bottom: 1px solid #e2ecf5;
-            padding-bottom: 15px;
         }
         .document-list a {
             display: flex;
             align-items: center;
             gap: 15px;
             text-decoration: none;
-            padding: 12px 20px;
+            padding: 18px 24px;
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             transition: all 0.3s ease;
             border: 1px solid #d4e0ea;
         }
         .document-list a:hover {
             transform: translateX(8px);
             border-color: #c4a747;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: #fffef8;
         }
         .doc-icon {
-            font-size: 28px;
+            font-size: 36px;
         }
         .doc-info {
             flex: 1;
         }
         .doc-title {
             font-weight: 700;
-            font-size: 16pt;
+            font-size: 18pt;
             color: #1f6392;
             font-family: 'Oswald', sans-serif;
         }
         .doc-description {
             font-size: 11pt;
             color: #5a7d9a;
-            margin-top: 4px;
+            margin-top: 5px;
         }
         .doc-badge {
             background: #c4a747;
             color: #1f4b6e;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 5px 14px;
+            border-radius: 30px;
             font-size: 10pt;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
         .footer {
-            margin-top: 30px;
+            margin-top: 40px;
             text-align: center;
             padding-top: 20px;
             border-top: 1px solid #d4e0ea;
             color: #8aa0b5;
-            font-size: 10pt;
+            font-size: 9pt;
+        }
+        .version {
+            margin-top: 10px;
+            font-size: 8pt;
         }
         @media print {
             body {
                 visibility: hidden;
             }
+        }
+        
+        /* Protecciones */
+        ::selection {
+            background: transparent;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -103,73 +120,59 @@
 <body>
 <div class="container">
     <h1>📡 ATC · DOCUMENTACIÓN OFICIAL</h1>
+    <div class="subtitle">Fuerza Aérea · Material de referencia autorizado</div>
+    
     <ul class="document-list">
+        <!-- DOCUMENTO 1: DIAGRAMA DE PISTAS -->
         <li>
-            <a href="index.html">
+            <a href="diagramas-pistas.html">
                 <div class="doc-icon">✈️</div>
                 <div class="doc-info">
                     <div class="doc-title">Diagrama de Pistas de Aterrizaje</div>
-                    <div class="doc-description">Cartas aeronáuticas oficiales - Fort Zancudo, LSIA, Cayo Perico, USS Independence y más</div>
+                    <div class="doc-description">Cartas aeronáuticas oficiales · Fort Zancudo · LSIA · Cayo Perico · USS Independence · Sandy Shores</div>
                 </div>
                 <div class="doc-badge">PRINCIPAL</div>
             </a>
         </li>
+        
+        <!-- DOCUMENTO 2: COMUNICACIONES ATC -->
         <li>
-            <a href="manual-operaciones.html">
-                <div class="doc-icon">📋</div>
-                <div class="doc-info">
-                    <div class="doc-title">Manual de Operaciones ATC</div>
-                    <div class="doc-description">Procedimientos estándar, comunicación y coordinación de tráfico aéreo</div>
-                </div>
-                <div class="doc-badge">v2.0</div>
-            </a>
-        </li>
-        <li>
-            <a href="procedimientos-emergencia.html">
-                <div class="doc-icon">🚨</div>
-                <div class="doc-info">
-                    <div class="doc-title">Procedimientos de Emergencia</div>
-                    <div class="doc-description">Protocolos para situaciones críticas, evacuación y respuesta inmediata</div>
-                </div>
-                <div class="doc-badge">CONFIDENCIAL</div>
-            </a>
-        </li>
-        <li>
-            <a href="checklist-pilotos.html">
-                <div class="doc-icon">✅</div>
-                <div class="doc-info">
-                    <div class="doc-title">Checklist de Pilotos</div>
-                    <div class="doc-description">Listas de verificación pre-vuelo, rodaje, despegue y aterrizaje</div>
-                </div>
-                <div class="doc-badge">OPERATIVO</div>
-            </a>
-        </li>
-        <li>
-            <a href="radiofonetica.html">
+            <a href="comunicaciones-atc.html">
                 <div class="doc-icon">📻</div>
                 <div class="doc-info">
-                    <div class="doc-title">Fraseología Aeronáutica</div>
-                    <div class="doc-description">Comunicaciones estándar ATC-Piloto, códigos y procedimientos radiales</div>
+                    <div class="doc-title">Comunicaciones ATC</div>
+                    <div class="doc-description">Fraseología aeronáutica · Protocolos de radio · Códigos y procedimientos de comunicación</div>
                 </div>
                 <div class="doc-badge">GUÍA</div>
             </a>
         </li>
     </ul>
+    
     <div class="footer">
         Fuerza Aérea · Documentación Oficial ATC<br>
-        Última actualización: Marzo 2026
+        <div class="version">Versión 1.0 · Marzo 2026</div>
     </div>
 </div>
 
 <script>
-    // Protecciones básicas
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    // Protecciones de seguridad
+    document.addEventListener('contextmenu', function(e) { 
+        e.preventDefault(); 
+        return false; 
+    });
+    
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+            (e.ctrlKey && (e.key === 'U' || e.key === 'u'))) {
             e.preventDefault();
             return false;
         }
     });
+    
+    document.onselectstart = function() { return false; };
+    
+    console.log('%c📡 DOCUMENTACIÓN ATC - ACCESO AUTORIZADO', 'color: #c4a747; font-size: 12px;');
 </script>
 </body>
 </html>
