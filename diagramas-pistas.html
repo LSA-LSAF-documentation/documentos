@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATC · Diagramas de Pistas | Fuerza Aérea</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* Evita selección de texto */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    /* Permite selección solo en campos de texto si los hubiera */
+    input, textarea {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      background-color: #2c3e4e;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    .manual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      background: #f5f7fc;
+      position: relative;
+      padding: 8mm 10mm 8mm 10mm;
+      display: flex;
+      flex-direction: column;
+      page-break-after: always;
+      break-inside: avoid;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.02"><path fill="%23336699" d="M50 15 L70 35 L65 55 L50 70 L35 55 L30 35 Z M50 30 L60 40 L55 55 L50 62 L45 55 L40 40 Z" /></svg>');
+      background-repeat: repeat;
+      background-size: 60px 60px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .page {
+        box-shadow: none;
+        border: none;
+        background-image: none;
+      }
+      /* Bloquear impresión desde el navegador */
+      body {
+        visibility: hidden;
+      }
+      .manual {
+        visibility: visible;
+      }
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3mm;
+      border-bottom: 2px solid #c4a747;
+      padding-bottom: 2mm;
+      flex-shrink: 0;
+    }
+    .logo-airforce {
+      height: 42px;
+      width: auto;
+      pointer-events: none;
+    }
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 15pt;
+      color: #1f6392;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .page-content {
+      flex: 1 0 auto;
+      overflow: visible;
+    }
+
+    .page-footer {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 4mm;
+      border-top: 1px dashed #c4a747;
+      padding-top: 2mm;
+      font-family: 'Oswald', sans-serif;
+      color: #5a7d9a;
+      font-size: 9pt;
+    }
+    .footer-note {
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .page-number {
+      font-weight: 700;
+      color: #1f6392;
+    }
+
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 24pt;
+      text-transform: uppercase;
+      color: #1f4b6e;
+      border-left: 10px solid #c4a747;
+      padding-left: 12px;
+      margin: 2mm 0 3mm 0;
+      border-bottom: 2px solid #c4a747;
+      padding-bottom: 2px;
+    }
+
+    .subsection-title {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 16pt;
+      color: #1f6392;
+      margin: 2mm 0 1.5mm 0;
+      border-left: 5px solid #c4a747;
+      padding-left: 10px;
+    }
+
+    .text-block {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5mm 3.5mm;
+      margin-bottom: 2.5mm;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      border: 1px solid #e2ecf5;
+    }
+
+    .info-label {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2c7aa0;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5mm;
+      display: block;
+    }
+
+    .info-text {
+      font-size: 10.5pt;
+      line-height: 1.35;
+      color: #1f3e54;
+      text-align: justify;
+    }
+
+    .highlight-box {
+      background: #fefcf5;
+      border-left: 4px solid #c4a747;
+      padding: 2mm 2.5mm;
+      margin: 2mm 0;
+      border-radius: 8px;
+    }
+
+    /* IMÁGENES DE DIAGRAMAS - TAMAÑO GRANDE */
+    .airport-diagram {
+      width: 100%;
+      margin: 1mm 0 3mm;
+      text-align: center;
+      background: #fff;
+      border-radius: 16px;
+      padding: 6mm 4mm;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #d4e0ea;
+    }
+    
+    .airport-diagram img {
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 4mm;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      pointer-events: none; /* Evita que se pueda arrastrar la imagen */
+      -webkit-user-drag: none;
+      user-drag: none;
+    }
+    
+    .diagram-large {
+      max-height: 550px !important;
+      min-height: 480px !important;
+      width: auto !important;
+      max-width: 100% !important;
+      object-fit: contain !important;
+    }
+    
+    .airport-diagram img {
+      max-height: 550px;
+      min-height: 480px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    
+    .legend-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5mm;
+      justify-content: center;
+      font-size: 8.5pt;
+      background: #f0f4f9;
+      padding: 2.5mm;
+      border-radius: 14px;
+      margin-top: 2mm;
+    }
+    .legend-badge {
+      background: white;
+      padding: 1mm 5px;
+      border-radius: 24px;
+      font-weight: 600;
+      color: #1f6392;
+      font-family: monospace;
+      font-size: 8.5pt;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .cover-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18mm;
+      margin: 8mm 0 12mm;
+      flex-wrap: wrap;
+    }
+    .cover-logos img {
+      height: 85px;
+      width: auto;
+      pointer-events: none;
+      -webkit-user-drag: none;
+      user-drag: none;
+    }
+    .cover-title {
+      text-align: center;
+      margin-top: 8mm;
+    }
+    .cover-title h1 {
+      font-family: Oswald;
+      font-size: 52pt;
+      margin: 3mm 0;
+      color: #1f4b6e;
+    }
+    .cover-title h2 {
+      font-family: Oswald;
+      font-weight: 500;
+      font-size: 34pt;
+      color: #c4a747;
+    }
+    .golden-rule {
+      background: #fff8e7;
+      border: 2px solid #c4a747;
+      border-radius: 20px;
+      padding: 4mm 5mm;
+      text-align: center;
+      margin: 4mm 0;
+    }
+    .golden-rule h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 20pt;
+      color: #1f4b6e;
+      margin-bottom: 2mm;
+    }
+    .signature-box {
+      border: 2px solid #c4a747;
+      width: 75mm;
+      margin: 8mm auto 5mm;
+      padding: 5mm;
+      text-align: center;
+      background-color: #fefcf5;
+      border-radius: 8px;
+    }
+    .small-print {
+      font-size: 8pt;
+      text-align: center;
+      margin-top: 10mm;
+      color: #6c8dae;
+      border-top: 0.5px dashed #c4a747;
+      padding-top: 4mm;
+      width: 100%;
+    }
+    .disclaimer-bottom {
+      font-size: 8pt;
+      text-align: center;
+      color: #8aa0b5;
+      margin-top: 4mm;
+    }
+    
+    .page .page-content {
+      overflow-y: auto;
+      overflow-x: visible;
+    }
+    
+    @media print {
+      .airport-diagram img {
+        max-height: 145mm !important;
+        min-height: 130mm !important;
+        width: auto !important;
+        max-width: 180mm !important;
+        object-fit: contain !important;
+      }
+      .page {
+        padding: 5mm 8mm 5mm 8mm;
+      }
+      /* Advertencia de impresión deshabilitada */
+      body::before {
+        content: "Documento Protegido - Impresión no autorizada";
+        display: block;
+        text-align: center;
+        background: red;
+        color: white;
+        padding: 10px;
+        font-size: 14px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+      }
+    }
+    
+    /* Bloquear selección de texto adicional */
+    ::selection {
+      background: transparent;
+    }
+    
+    /* Ocultar el cursor de selección en elementos */
+    p, h1, h2, h3, h4, span, div {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="manual">
+  <!-- PÁGINA 1 - PORTADA -->
+  <div class="page">
+    <div class="cover-logos">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force">
+      <img src="https://i.imgur.com/wioFUxA.png" alt="Air Education and Training Command">
+    </div>
+    <div class="page-content">
+      <div class="cover-title">
+        <h1>DIAGRAMA DE PISTAS</h1>
+        <h2>DE ATERRIZAJE</h2>
+        <h2 style="font-size: 30pt; margin-top: 2mm;">LOS SANTOS</h2>
+        <div style="height: 2px; background: #c4a747; width: 60%; margin: 5mm auto;"></div>
+        <p style="font-size: 15pt; margin-top: 8mm;"><span style="background: #1f4b6e; color: white; padding: 4px 20px; border-radius: 40px;">ATC · CARTA AERONÁUTICA OFICIAL</span></p>
+        <p style="font-size: 12pt; margin-top: 8mm;">Control de Tráfico Aéreo • Referencia de Aeródromos • Seguridad Operacional</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Alto Mando</span>
+      <span class="page-number">1</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 2 - Importancia de diagramas -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">ATC · Seguridad Operacional</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce" style="opacity:0.8;">
+    </div>
+    <div class="page-content">
+      <div class="section-title">CONOCER LOS DIAGRAMAS</div>
+      <div class="text-block">
+        <span class="info-label">✈️ PILOTOS · CONTROLADORES · PERSONAL AERONÁUTICO</span>
+        <div class="info-text">
+          Conocer los diagramas de pistas de aterrizaje es crucial tanto para pilotos como para personal de control de tráfico aéreo y otros profesionales de la aviación. Estas cartas garantizan operaciones seguras, eficientes y coordinadas en todo el espacio aéreo.
+        </div>
+      </div>
+      <div class="subsection-title">SEGURIDAD OPERACIONAL</div>
+      <div class="highlight-box">
+        <strong>Navegación Precisa:</strong> Los pilotos utilizan los diagramas para obtener longitud, anchura de pistas, calles de rodaje y disposición de instalaciones. Esencial para aterrizajes y despegues seguros.<br><br>
+        <strong>Evitar confusiones:</strong> La familiaridad reduce errores durante aproximación, aterrizaje y despegue, mejorando la seguridad operacional.
+      </div>
+      <div class="subsection-title">EFICIENCIA OPERATIVA</div>
+      <div class="highlight-box">
+        <strong>Planificación de rutas:</strong> Permite planificar rutas considerando calles de rodaje y puertas de embarque.<br>
+        <strong>Gestión de tráfico aéreo:</strong> Los controladores coordinan operaciones de aterrizaje y despegue evitando conflictos en pista.
+      </div>
+      <div class="text-block">
+        <span class="info-label">🚨 EMERGENCIAS Y CONDICIONES ADVERSAS</span>
+        <div class="info-text">
+          En situaciones de emergencia, el conocimiento de diagramas facilita evacuación y respuesta rápida. En condiciones meteorológicas adversas, permite decisiones informadas para aterrizar o despegar con seguridad. Además, son herramientas clave en la capacitación y simulación de pilotos.
+        </div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Doctrina ATC</span>
+      <span class="page-number">2</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 3 - FORT ZANCUDO -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">Aeródromo Militar · FORT ZANCUDO</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+    </div>
+    <div class="page-content">
+      <div class="section-title">FORT ZANCUDO</div>
+      <div class="airport-diagram">
+        <img src="https://i.imgur.com/cylArCt.jpeg" alt="Diagrama Fort Zancudo" class="diagram-large" draggable="false">
+        <div class="legend-list">
+          <span class="legend-badge">C7: Canchas unidad 7</span>
+          <span class="legend-badge">A1,2: Hangar 1 y 2</span>
+          <span class="legend-badge">ZRA: Zona reabast. aéreo</span>
+          <span class="legend-badge">ZRT: Zona reabast. terrestre</span>
+          <span class="legend-badge">0101: Hangar 0101</span>
+          <span class="legend-badge">ZE1-5: Estacionamiento</span>
+          <span class="legend-badge">ATC: Control</span>
+          <span class="legend-badge">30-33: Pistas (33 rápida)</span>
+          <span class="legend-badge">B: Bomberos</span>
+          <span class="legend-badge">H1-5: Helipads</span>
+          <span class="legend-badge">T1-5: Training Texan</span>
+          <span class="legend-badge">14E: Taxeo</span>
+          <span class="legend-badge">PE1-3: Puntos espera</span>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <span class="info-label">📌 NOTAS OPERATIVAS</span>
+        <div class="info-text">C7 solo aterrizajes de emergencia o transporte personal Oficial. Pista 33 prioritaria para aeronaves de respuesta rápida. Respetar rutas de taxeo 14E y puntos de espera PE1-3.</div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Base Estratégica</span>
+      <span class="page-number">3</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 4 - LOS SANTOS INTERNATIONAL -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">Internacional · LSIA</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+    </div>
+    <div class="page-content">
+      <div class="section-title">LOS SANTOS INTERNATIONAL AIRPORT</div>
+      <div class="airport-diagram">
+        <img src="https://i.imgur.com/VR5p0Wa.jpeg" alt="LSIA Diagram" class="diagram-large" draggable="false">
+        <div class="legend-list">
+          <span class="legend-badge">A1-5: Taxeo Alpha</span>
+          <span class="legend-badge">B1-4: Taxeo Bravo</span>
+          <span class="legend-badge">C1-18: Taxeo Charlie</span>
+          <span class="legend-badge">D1-5: Taxeo Delta</span>
+          <span class="legend-badge">H1-3: Helipads</span>
+          <span class="legend-badge">ATC: Control de tráfico aéreo</span>
+        </div>
+      </div>
+      <div class="text-block">
+        <span class="info-label">🛬 OPERACIONES CIVILES Y MILITARES</span>
+        <div class="info-text">LSIA es el principal aeropuerto internacional. Respetar rutas de taxeo designadas y mantener contacto constante con ATC. Helipads H1-3 exclusivos para giroaviones autorizados.</div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Terminal Conjunta</span>
+      <span class="page-number">4</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 5 - CAYO PERICO -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">Isla · CAYO PERICO</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+    </div>
+    <div class="page-content">
+      <div class="section-title">CAYO PERICO</div>
+      <div class="airport-diagram">
+        <img src="https://i.imgur.com/fvLketY.jpeg" alt="Cayo Perico Airstrip" class="diagram-large" draggable="false">
+        <div class="legend-list">
+          <span class="legend-badge">ATC: Control de tráfico aéreo</span>
+          <span class="legend-badge">A1-3: Puntos Alpha</span>
+          <span class="legend-badge">9: Pista de aterrizaje</span>
+          <span class="legend-badge">25: Pista de despegue</span>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <span class="info-label">⚠️ RESTRICCIONES</span>
+        <div class="info-text">Pista 9 designada exclusivamente para aterrizajes; pista 25 para despegues. Cumplir puntos Alpha A1-3 para rodaje coordinado con ATC isla.</div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Zona Estratégica</span>
+      <span class="page-number">5</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 6 - GRAPESEED -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">Campo Aéreo · GRAPESEED</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+    </div>
+    <div class="page-content">
+      <div class="section-title">GRAPESEED AIRFIELD</div>
+      <div class="airport-diagram">
+        <img src="https://i.imgur.com/Qqhv82X.jpeg" alt="Grapeseed" class="diagram-large" draggable="false">
+        <div class="legend-list">
+          <span class="legend-badge">TWR: Torre de control</span>
+          <span class="legend-badge">A1: Hangar</span>
+          <span class="legend-badge">9: Pista aterrizaje</span>
+          <span class="legend-badge">24: Pista despegue</span>
+        </div>
+      </div>
+      <div class="info-text" style="margin-top: 2mm;">Utilizar torre de control para autorizaciones. Hangar A1 disponible para mantenimiento liviano. Pista 24 preferente para salidas con viento predominante.</div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Entrenamiento</span>
+      <span class="page-number">6</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 7 - USS INDEPENDENCE -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">Portaaviones · USS INDEPENDENCE</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+    </div>
+    <div class="page-content">
+      <div class="section-title">USS INDEPENDENCE</div>
+      <div class="airport-diagram">
+        <img src="https://i.imgur.com/wB5sRCF.jpeg" alt="USS Lexington" class="diagram-large" draggable="false" style="max-height: 500px; min-height: 460px;">
+        <div class="legend-list">
+          <span class="legend-badge">Aterrizaje: POPA</span>
+          <span class="legend-badge">Despegue: ESTRIBOR</span>
+        </div>
+      </div>
+      <div class="text-block">
+        <span class="info-label">⚓ HISTORIA Y PROCEDIMIENTO</span>
+        <div class="info-text">
+          Este USS Lexington es uno de los portaaviones más exitosos y decorados de la Segunda Guerra Mundial. Participó en numerosas operaciones en el Pacífico.<br><br>
+          <strong>La manera correcta y obligatoria de aterrizar en el portaaviones es:</strong> Aterrizaje por popa del portaaviones. Despegue por estribor del portaaviones.
+        </div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Unidad Naval Aérea</span>
+      <span class="page-number">7</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 8 - SANDY SHORES -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">Aeródromo Costero · SANDY SHORES</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+    </div>
+    <div class="page-content">
+      <div class="section-title">SANDY SHORES AIRFIELD</div>
+      <div class="airport-diagram">
+        <img src="https://i.imgur.com/0djcDCi.jpeg" alt="Sandy Shores" class="diagram-large" draggable="false">
+        <div class="legend-list">
+          <span class="legend-badge">PE1-2: Puntos de espera</span>
+          <span class="legend-badge">15, 45: Pistas de aterrizaje y despegue</span>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <span class="info-label">🚁 OPERACIONES MIXTAS</span>
+        <div class="info-text">Pista 15 y 45 disponibles. Respetar puntos de espera PE1 y PE2 antes de ingresar a pista activa. Torre de control en frecuencia asignada.</div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Tráfico Regional</span>
+      <span class="page-number">8</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 9 - REGLA DE ORO -->
+  <div class="page">
+    <div class="page-header">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+      <span class="header-title">ATC · Regla de Oro</span>
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+    </div>
+    <div class="page-content">
+      <div class="section-title">REGLA DE ORO</div>
+      <div class="golden-rule">
+        <h3>DOMINA EL DIAGRAMA, DOMINAS EL CIELO</h3>
+        <p>“Conocer cada pista, cada calle de rodaje, cada umbral no es opción: es tu carta de navegación hacia la seguridad absoluta. La ambigüedad en tierra genera caos en vuelo.”</p>
+      </div>
+      <div class="text-block">
+        <span class="info-label">📐 PRINCIPIO DE CONOCIMIENTO AERONÁUTICO</span>
+        <div class="info-text">
+          • Visualiza el aeródromo antes de despegar. <br>
+          • Memoriza rutas de taxeo y puntos de espera. <br>
+          • Ante emergencia, la familiaridad con el diagrama salva segundos vitales. <br>
+          • Un piloto preparado conoce la geometría de su entorno operacional. <br>
+          • La excelencia comienza en la carta, se ejecuta en la cabina.
+        </div>
+      </div>
+      <div class="highlight-box">
+        <div class="info-text"><strong>“La seguridad empieza en el mapa: cada diagrama es un compromiso con la vida.”</strong></div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Doctrina de Precisión</span>
+      <span class="page-number">9</span>
+    </div>
+  </div>
+
+  <!-- PÁGINA 10 - CIERRE OFICIAL -->
+  <div class="page">
+    <div class="page-header" style="justify-content: center; gap: 12px; border-bottom: none;">
+      <img src="https://i.imgur.com/FeE9uvO.png" alt="LSAF" style="height: 48px;">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" style="height: 48px;">
+      <img src="https://i.imgur.com/wioFUxA.png" alt="AETC" style="height: 48px;">
+    </div>
+    <div class="page-content">
+      <div style="text-align: center; margin-top: 6mm;">
+        <div style="font-size: 48pt; font-family: Oswald; color: #1f6392;">★ ★ ★</div>
+        <p style="font-size: 34pt; font-family: Oswald; margin: 4mm 0 2mm; color: #1f4b6e;">PROTOCOLO OFICIAL ATC</p>
+        <p style="font-size: 14pt; max-width: 140mm; margin: 0 auto; font-style: italic; color: #2c7aa0;">“Un aeródromo bien conocido es un aliado silencioso”</p>
+        <div class="signature-box">
+          <p style="font-family: Oswald; font-size: 15pt; margin-bottom: 3mm;">Alto Mando Aéreo</p>
+          <div style="margin: 2mm 0;">
+            <img src="https://i.imgur.com/gyQC992.png" alt="Firma" style="max-width: 55mm; height: auto; display: block; margin: 0 auto;">
+          </div>
+          <p style="font-family: Oswald; font-size: 12pt;">General de División</p>
+          <p style="font-size: 8pt;">Comando de Educación y Doctrina Aérea</p>
+        </div>
+        <div class="small-print">
+          Este documento puede sufrir cambios sin previo aviso.<br>
+          Se recomienda su revisión continua.
+        </div>
+        <p style="margin-top: 5mm; font-size: 8.5pt; color: #5a7d9a;">Fuerza Aérea · Cartografía Oficial ATC v2.0</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Documento oficial de diagramas de pistas</span>
+      <span class="page-number">10</span>
+    </div>
+  </div>
+</div>
+
+<script>
+    // ============================================
+    // BLOQUEO COMPLETO DE SEGURIDAD
+    // ============================================
+    
+    // 1. Bloquear clic derecho
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // 2. Bloquear combinaciones de teclado para desarrolladores
+    document.addEventListener('keydown', function(e) {
+        // Bloquear F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+Shift+I (abrir inspector)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+Shift+J (abrir consola)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+Shift+C (inspeccionar elemento)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+U (ver código fuente)
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+S (guardar página)
+        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+P (imprimir)
+        if (e.ctrlKey && (e.key === 'P' || e.key === 'p')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+C (copiar)
+        if (e.ctrlKey && (e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+X (cortar)
+        if (e.ctrlKey && (e.key === 'X' || e.key === 'x')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+V (pegar)
+        if (e.ctrlKey && (e.key === 'V' || e.key === 'v')) {
+            e.preventDefault();
+            return false;
+        }
+        // Bloquear Ctrl+A (seleccionar todo)
+        if (e.ctrlKey && (e.key === 'A' || e.key === 'a')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // 3. Prevenir arrastre de imágenes y elementos
+    window.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // 4. Deshabilitar selección de texto adicionalmente con JavaScript
+    document.onselectstart = function() { return false; };
+    document.onmousedown = function(e) {
+        // Permitir interacción normal con elementos interactivos si los hubiera
+        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+            return true;
+        }
+        return true;
+    };
+    
+    // 5. Detectar apertura de consola y mostrar advertencia (opcional)
+    // Detección básica de consola abierta
+    (function() {
+        const devtools = /./;
+        devtools.toString = function() {
+            console.log('%c⚠️ DOCUMENTO PROTEGIDO ⚠️', 'color: red; font-size: 18px; font-weight: bold;');
+            console.log('%cNo está autorizado el uso de herramientas de desarrollo', 'color: orange; font-size: 14px;');
+            return 'protected';
+        };
+        console.log(devtools);
+    })();
+    
+    // 6. Prevenir que se pueda copiar texto desde el contexto del navegador
+    document.body.addEventListener('copy', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    document.body.addEventListener('cut', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // 7. Deshabilitar tecla de menú (contexto del teclado)
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ContextMenu' || e.keyCode === 93) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // 8. Limpiar consola periódicamente (opcional, para dificultar debugging)
+    // setInterval(function() {
+    //     console.clear();
+    // }, 1000);
+    
+    // 9. Prevenir que se pueda ver el código mediante eventos
+    window.addEventListener('beforeunload', function() {
+        // No hacer nada, solo prevención
+    });
+    
+    // 10. Mensaje en consola de advertencia
+    console.log('%c🚫 DOCUMENTO CONFIDENCIAL - ACCESO NO AUTORIZADO 🚫', 'color: red; font-size: 16px; font-weight: bold; background: black; padding: 4px;');
+    console.log('%cEl uso de herramientas de desarrollo está prohibido', 'color: orange; font-size: 12px;');
+    
+    // 11. Bloquear que se pueda hacer clic derecho en imágenes
+    const allImages = document.querySelectorAll('img');
+    allImages.forEach(img => {
+        img.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        img.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    });
+</script>
+</body>
+</html>
