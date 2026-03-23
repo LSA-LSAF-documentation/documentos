@@ -83,15 +83,6 @@
             color: #5a7d9a;
             margin-top: 5px;
         }
-        .doc-badge {
-            background: #c4a747;
-            color: #1f4b6e;
-            padding: 5px 14px;
-            border-radius: 30px;
-            font-size: 10pt;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
         .footer {
             margin-top: 40px;
             text-align: center;
@@ -131,7 +122,6 @@
                     <div class="doc-title">Diagrama de Pistas de Aterrizaje</div>
                     <div class="doc-description">Cartas aeronáuticas oficiales · Fort Zancudo · LSIA · Cayo Perico · USS Independence · Sandy Shores</div>
                 </div>
-                <div class="doc-badge">PRINCIPAL</div>
             </a>
         </li>
         
@@ -143,7 +133,6 @@
                     <div class="doc-title">Comunicaciones ATC</div>
                     <div class="doc-description">Fraseología aeronáutica · Protocolos de radio · Códigos y procedimientos de comunicación</div>
                 </div>
-                <div class="doc-badge">GUÍA</div>
             </a>
         </li>
     </ul>
@@ -240,8 +229,7 @@
         return true;
     };
     
-    // 5. Detectar apertura de consola y mostrar advertencia (opcional)
-    // Detección básica de consola abierta
+    // 5. Detectar apertura de consola y mostrar advertencia
     (function() {
         const devtools = /./;
         devtools.toString = function() {
@@ -271,21 +259,11 @@
         }
     });
     
-    // 8. Limpiar consola periódicamente (opcional, para dificultar debugging)
-    // setInterval(function() {
-    //     console.clear();
-    // }, 1000);
-    
-    // 9. Prevenir que se pueda ver el código mediante eventos
-    window.addEventListener('beforeunload', function() {
-        // No hacer nada, solo prevención
-    });
-    
-    // 10. Mensaje en consola de advertencia
+    // 8. Mensaje en consola de advertencia
     console.log('%c🚫 DOCUMENTO CONFIDENCIAL - ACCESO NO AUTORIZADO 🚫', 'color: red; font-size: 16px; font-weight: bold; background: black; padding: 4px;');
     console.log('%cEl uso de herramientas de desarrollo está prohibido', 'color: orange; font-size: 12px;');
     
-    // 11. Bloquear que se pueda hacer clic derecho en imágenes
+    // 9. Bloquear que se pueda hacer clic derecho en imágenes
     const allImages = document.querySelectorAll('img');
     allImages.forEach(img => {
         img.addEventListener('contextmenu', function(e) {
