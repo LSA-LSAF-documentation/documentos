@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fuerza Aérea · Orden de Certificación de Aeronaves</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      background-color: #2c3e4e;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    .manual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      background: #f5f7fc;
+      position: relative;
+      padding: 12mm 12mm 12mm 12mm;
+      display: flex;
+      flex-direction: column;
+      page-break-after: always;
+      break-inside: avoid;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.02"><path fill="%23336699" d="M50 15 L70 35 L65 55 L50 70 L35 55 L30 35 Z M50 30 L60 40 L55 55 L50 62 L45 55 L40 40 Z" /></svg>');
+      background-repeat: repeat;
+      background-size: 60px 60px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .page {
+        box-shadow: none;
+        border: none;
+        background-image: none;
+      }
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5mm;
+      border-bottom: 2px solid #c4a747;
+      padding-bottom: 3mm;
+      flex-shrink: 0;
+    }
+    .logo-airforce {
+      height: 45px;
+      width: auto;
+    }
+    .header-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16pt;
+      color: #1f6392;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .page-content {
+      flex: 1 0 auto;
+      overflow: visible;
+    }
+
+    .page-footer {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 6mm;
+      border-top: 1px dashed #c4a747;
+      padding-top: 3mm;
+      font-family: 'Oswald', sans-serif;
+      color: #5a7d9a;
+      font-size: 10pt;
+    }
+    .footer-note {
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .page-number {
+      font-weight: 700;
+      color: #1f6392;
+    }
+
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 28pt;
+      text-transform: uppercase;
+      color: #1f4b6e;
+      border-left: 10px solid #c4a747;
+      padding-left: 12px;
+      margin: 5mm 0 6mm 0;
+      border-bottom: 2px solid #c4a747;
+      padding-bottom: 3px;
+    }
+
+    /* Grid de 2 columnas, 2 tarjetas por página */
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6mm;
+      margin: 3mm 0;
+    }
+
+    .aircraft-card {
+      background: white;
+      border: 1px solid #d4e0ec;
+      border-radius: 16px;
+      overflow: hidden;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .aircraft-img-area {
+      background: #eef3fa;
+      height: 56mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #e0eaf3;
+    }
+    .aircraft-img {
+      max-height: 52mm;
+      max-width: 85%;
+      object-fit: contain;
+    }
+    .no-img-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #6c8fae;
+      font-size: 0.9rem;
+      background: #f4f9ff;
+      width: 100%;
+      height: 100%;
+    }
+    .no-img-placeholder::before {
+      content: "✈️";
+      font-size: 2.4rem;
+      opacity: 0.5;
+    }
+    .card-info {
+      padding: 5mm 5mm 6mm 5mm;
+    }
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      border-bottom: 1px dashed #cbdde8;
+      margin-bottom: 4mm;
+      padding-bottom: 2mm;
+    }
+    .aircraft-name {
+      font-size: 16pt;
+      font-weight: 800;
+      color: #0a3149;
+    }
+    .aircraft-code {
+      font-family: monospace;
+      background: #eef3fa;
+      padding: 2px 10px;
+      border-radius: 30px;
+      font-size: 9pt;
+      color: #2a6f8f;
+    }
+    .level-badge {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 11pt;
+      padding: 4px 16px;
+      border-radius: 30px;
+      margin: 3mm 0 4mm 0;
+      background: #1f5a7e;
+      color: white;
+    }
+    .level-basic { background: #2f7d5c; }
+    .level-intermediate { background: #2b7a4b; }
+    .level-advanced { background: #b3622e; }
+    .level-oficial { background: #1a659e; }
+    .level-alto-oficial { background: #2b4f6e; }
+    .level-alto-mando { background: #1c2f42; }
+
+    .info-block {
+      margin-bottom: 4mm;
+    }
+    .info-label {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2c7aa0;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5mm;
+      display: block;
+    }
+    .info-text {
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #1f3e54;
+    }
+    .justify-bg {
+      background: #fafdff;
+      padding: 3mm;
+      border-radius: 10px;
+      border-left: 3px solid #c4a747;
+    }
+
+    .cover-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12mm;
+      margin: 12mm 0 10mm;
+    }
+    .cover-logos img {
+      height: 85px;
+      width: auto;
+    }
+    .cover-title {
+      text-align: center;
+      margin-top: 15mm;
+    }
+    .cover-title h1 {
+      font-family: Oswald;
+      font-size: 48pt;
+      margin: 4mm 0;
+      color: #1f4b6e;
+    }
+    .cover-title h2 {
+      font-family: Oswald;
+      font-weight: 500;
+      font-size: 32pt;
+      color: #c4a747;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="manual">
+  <!-- PORTADA -->
+  <div class="page">
+    <div class="cover-logos">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force Emblem">
+      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force Emblem">
+    </div>
+    <div class="page-content">
+      <div class="cover-title">
+        <h1>FUERZA AÉREA</h1>
+        <h2>ORDEN DE CERTIFICACIÓN</h2>
+        <div style="height: 2px; background: #c4a747; width: 60%; margin: 6mm auto;"></div>
+        <p style="font-size: 15pt; margin-top: 8mm;"><span style="background: #1f4b6e; color: white; padding: 4px 16px; border-radius: 40px;">DOCUMENTO OFICIAL</span></p>
+        <p style="font-size: 13pt; margin-top: 10mm;">Catálogo de aeronaves autorizadas<br>Progresión táctica y operativa</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="footer-note">Fuerza Aérea · Alto Mando</span>
+      <span class="page-number">1</span>
+    </div>
+  </div>
+
+  <div id="dynamic-pages"></div>
+</div>
+
+<script>
+  // Diccionario de imágenes según código (identificador único)
+  const imagesMap = {
+    // Aviones
+    cuban800: "https://i.imgur.com/YsMO7XO.png",
+    dodo: "https://i.imgur.com/rLiXM9b.png",
+    mammatus: "https://i.imgur.com/HmKn5nG.png",
+    velum: "https://i.imgur.com/EBaFiVR.png",
+    vestra: "https://i.imgur.com/91vce6I.png",
+    besra: "https://i.imgur.com/YbmOyJL.png",
+    hydra: "https://i.imgur.com/ntoWjyM.png",
+    strikeforce: "https://i.imgur.com/KhZgL9u.png",
+    lazer: "https://i.imgur.com/wkUesvV.png",
+    raiju: "https://i.imgur.com/Rp0SFTT.png",
+    // Helicópteros
+    maverick: "https://i.imgur.com/iGVfksK.png",
+    frogger: "https://i.imgur.com/jGaHGgg.png",
+    swift: "https://i.imgur.com/eAf7xLC.png",
+    buzzard2: "https://i.imgur.com/m8andTX.png",   // Buzzard (intermedio)
+    buzzard: "https://i.imgur.com/MLchDlf.png",    // Buzzard Attack
+    cargobob: "https://i.imgur.com/d5le90j.png",
+    valkyrie: "https://i.imgur.com/IDEYQ6b.png",
+    savage: "https://i.imgur.com/YgvS2xL.png",
+    hunter: "https://i.imgur.com/tnI3ELY.png",
+    akula: "https://i.imgur.com/WvBMb0v.png"
+  };
+
+  // Datos de aviones (sin rangos numéricos)
+  const planesData = [
+    { name: "Cuban 800", code: "cuban800", levelRaw: "Básico", levelType: "basic", funcion: "Entrenamiento inicial y vuelo básico", justificacion: "Avión lento y estable, ideal para aprender despegue, aterrizaje y control." },
+    { name: "Dodo", code: "dodo", levelRaw: "Básico", levelType: "basic", funcion: "Vuelo anfibio", justificacion: "Introduce al piloto en manejo de agua y control adicional." },
+    { name: "Mammatus", code: "mammatus", levelRaw: "Básico", levelType: "basic", funcion: "Navegación aérea", justificacion: "Mejora precisión y control en vuelos más largos." },
+    { name: "Velum", code: "velum", levelRaw: "Intermedio", levelType: "intermediate", funcion: "Transporte ligero", justificacion: "Introduce responsabilidad de transporte y control de carga." },
+    { name: "Vestra", code: "vestra", levelRaw: "Intermedio", levelType: "intermediate", funcion: "Vuelo rápido y maniobras", justificacion: "Más velocidad → requiere mejor control del piloto." },
+    { name: "Besra", code: "besra", levelRaw: "Avanzado", levelType: "advanced", funcion: "Jet de entrenamiento", justificacion: "Primer contacto con jets sin armamento." },
+    { name: "Hydra", code: "hydra", levelRaw: "Oficial", levelType: "oficial", funcion: "Combate VTOL", justificacion: "Introduce combate aéreo + despegue vertical." },
+    { name: "B-11 Strikeforce", code: "strikeforce", levelRaw: "Oficial", levelType: "oficial", funcion: "Ataque terrestre", justificacion: "Operaciones tácticas y apoyo cercano." },
+    { name: "P-996 LAZER", code: "lazer", levelRaw: "Alto Oficial", levelType: "alto-oficial", funcion: "Superioridad aérea", justificacion: "Jet de combate avanzado, requiere alta habilidad." },
+    { name: "F-160 Raiju", code: "raiju", levelRaw: "Alto Mando", levelType: "alto-mando", funcion: "Combate avanzado / tecnología superior", justificacion: "Máximo nivel, requiere dominio total del vuelo y combate." }
+  ];
+
+  const helicoptersData = [
+    { name: "Maverick", code: "maverick", levelRaw: "Básico", levelType: "basic", funcion: "Reconocimiento y transporte ligero", justificacion: "Helicóptero estable y fácil de controlar." },
+    { name: "Frogger", code: "frogger", levelRaw: "Básico", levelType: "basic", funcion: "Patrullaje aéreo", justificacion: "Mejora control y estabilidad en vuelo urbano." },
+    { name: "Swift", code: "swift", levelRaw: "Intermedio", levelType: "intermediate", funcion: "Transporte rápido", justificacion: "Mayor velocidad → requiere mejor control." },
+    { name: "Buzzard", code: "buzzard2", levelRaw: "Intermedio", levelType: "intermediate", funcion: "Apoyo ligero", justificacion: "Introducción a helicópteros tácticos." },
+    { name: "Buzzard Attack", code: "buzzard", levelRaw: "Avanzado", levelType: "advanced", funcion: "Combate ligero", justificacion: "Primer helicóptero armado." },
+    { name: "Cargobob", code: "cargobob", levelRaw: "Avanzado", levelType: "advanced", funcion: "Transporte pesado", justificacion: "Manejo de carga externa (difícil)." },
+    { name: "Valkyrie", code: "valkyrie", levelRaw: "Oficial", levelType: "oficial", funcion: "Apoyo aéreo armado", justificacion: "Coordinación con tripulación." },
+    { name: "Savage", code: "savage", levelRaw: "Oficial", levelType: "oficial", funcion: "Ataque pesado", justificacion: "Gran potencia, requiere control avanzado." },
+    { name: "Hunter", code: "hunter", levelRaw: "Alto Oficial", levelType: "alto-oficial", funcion: "Helicóptero de combate táctico", justificacion: "Alto nivel de coordinación y precisión." },
+    { name: "Akula", code: "akula", levelRaw: "Alto Mando", levelType: "alto-mando", funcion: "Operaciones avanzadas / sigilo", justificacion: "Helicóptero más avanzado, uso estratégico." }
+  ];
+
+  function getLevelClass(type) {
+    const map = {
+      'basic': 'level-basic',
+      'intermediate': 'level-intermediate',
+      'advanced': 'level-advanced',
+      'oficial': 'level-oficial',
+      'alto-oficial': 'level-alto-oficial',
+      'alto-mando': 'level-alto-mando'
+    };
+    return map[type] || 'level-basic';
+  }
+
+  function renderCard(ac) {
+    const imgUrl = imagesMap[ac.code] || null;
+    let imgHtml = '';
+    if (imgUrl) {
+      imgHtml = `<img class="aircraft-img" src="${imgUrl}" alt="${ac.name}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'no-img-placeholder\'><span>Imagen no disponible</span></div>';">`;
+    } else {
+      imgHtml = `<div class="no-img-placeholder"><span>Referencia técnica</span></div>`;
+    }
+    const levelClass = getLevelClass(ac.levelType);
+    return `
+      <div class="aircraft-card">
+        <div class="aircraft-img-area">
+          ${imgHtml}
+        </div>
+        <div class="card-info">
+          <div class="card-title-row">
+            <span class="aircraft-name">${ac.name}</span>
+            <span class="aircraft-code">${ac.code}</span>
+          </div>
+          <div class="level-badge ${levelClass}">${ac.levelRaw}</div>
+          <div class="info-block">
+            <span class="info-label">🎯 FUNCIÓN</span>
+            <div class="info-text">${ac.funcion}</div>
+          </div>
+          <div class="info-block">
+            <span class="info-label">📌 JUSTIFICACIÓN</span>
+            <div class="info-text justify-bg">${ac.justificacion}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Genera páginas con 2 tarjetas por página
+  function createPages(title, aircraftList, startNumber) {
+    const cardsPerPage = 2;
+    const pages = [];
+    for (let i = 0; i < aircraftList.length; i += cardsPerPage) {
+      const chunk = aircraftList.slice(i, i + cardsPerPage);
+      const cardsHtml = chunk.map(card => renderCard(card)).join('');
+      const pageNum = startNumber + pages.length;
+      pages.push(`
+        <div class="page">
+          <div class="page-header">
+            <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+            <span class="header-title">${title} · Certificación</span>
+            <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce" style="opacity:0.8;">
+          </div>
+          <div class="page-content">
+            <div class="section-title">${title}</div>
+            <div class="grid-cards">
+              ${cardsHtml}
+            </div>
+          </div>
+          <div class="page-footer">
+            <span class="footer-note">Fuerza Aérea · Certificación táctica</span>
+            <span class="page-number">${pageNum}</span>
+          </div>
+        </div>
+      `);
+    }
+    return { pages, count: pages.length };
+  }
+
+  let currentNumber = 2;
+  const allPages = [];
+
+  const planesResult = createPages("AVIONES — CERTIFICACIÓN", planesData, currentNumber);
+  allPages.push(...planesResult.pages);
+  currentNumber += planesResult.count;
+
+  const helosResult = createPages("HELICÓPTEROS — CERTIFICACIÓN", helicoptersData, currentNumber);
+  allPages.push(...helosResult.pages);
+  currentNumber += helosResult.count;
+
+  // Página final con firma
+  allPages.push(`
+    <div class="page">
+      <div class="page-header" style="justify-content: center; gap: 10px; border-bottom: none;">
+        <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" style="height: 50px;">
+        <span class="header-title" style="font-size: 20pt;">DOMINIO DEL CIELO</span>
+        <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" style="height: 50px;">
+      </div>
+      <div class="page-content">
+        <div style="text-align: center; margin-top: 20mm;">
+          <div style="font-size: 36pt; font-family: Oswald; color: #1f6392;">★ ★ ★</div>
+          <p style="font-size: 28pt; font-family: Oswald; margin: 8mm 0; color: #1f4b6e;">CERTIFICACIÓN COMPLETA</p>
+          <p style="font-size: 13pt; max-width: 130mm; margin: 0 auto;">"La excelencia en el vuelo y el combate se forja con disciplina, conocimiento y respeto por la cadena de mando."</p>
+          <div style="border: 2px solid #c4a747; width: 75mm; margin: 14mm auto; padding: 6mm; text-align: center; background-color: #fefcf5; border-radius: 8px;">
+            <p style="font-family: Oswald; font-size: 14pt; margin-bottom: 4mm;">Alto Mando Aéreo</p>
+            <div style="margin: 3mm 0;">
+              <img src="https://i.imgur.com/gyQC992.png" alt="Firma" style="max-width: 60mm; height: auto; display: block; margin: 0 auto;">
+            </div>
+            <p style="font-family: Oswald; font-size: 13pt;">General de División</p>
+          </div>
+          <p style="margin-top: 12mm; font-size: 10pt;">Este documento certifica el orden de progresión de aeronaves de la Fuerza Aérea.</p>
+        </div>
+      </div>
+      <div class="page-footer">
+        <span class="footer-note">Fuerza Aérea · Documento oficial</span>
+        <span class="page-number">${currentNumber}</span>
+      </div>
+    </div>
+  `);
+
+  document.getElementById('dynamic-pages').innerHTML = allPages.join('');
+
+  // Manejo de errores de imagen
+  document.querySelectorAll('.aircraft-img').forEach(img => {
+    img.addEventListener('error', function() {
+      const parent = this.closest('.aircraft-img-area');
+      if (parent && !parent.querySelector('.no-img-placeholder')) {
+        parent.innerHTML = `<div class="no-img-placeholder"><span>Imagen no disponible</span></div>`;
+      }
+    });
+  });
+</script>
+</body>
+</html>
