@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATC · Documentación Oficial</title>
+    <title>National Guard · Documentación Oficial</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
             -webkit-user-select: none;
         }
         body {
-            background: linear-gradient(135deg, #1a2a36 0%, #0f1a22 100%);
+            background: linear-gradient(135deg, #2d3e2b 0%, #1a2a1a 100%);
             font-family: 'Roboto', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -24,24 +24,41 @@
         .container {
             max-width: 800px;
             width: 100%;
-            background: #f5f7fc;
+            background: #f0ede8;
             border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid #8b7a4b;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .header-title img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
         h1 {
             font-family: 'Oswald', sans-serif;
             font-size: 32pt;
-            color: #1f4b6e;
-            border-left: 6px solid #c4a747;
+            color: #4a5b3e;
+            border-left: 6px solid #c9a53b;
             padding-left: 20px;
-            margin-bottom: 10px;
+            margin: 0;
+            letter-spacing: 1px;
         }
         .subtitle {
-            color: #5a7d9a;
+            color: #6b5e3e;
             margin-bottom: 30px;
             margin-left: 26px;
             font-size: 11pt;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .document-list {
             list-style: none;
@@ -55,16 +72,16 @@
             gap: 15px;
             text-decoration: none;
             padding: 18px 24px;
-            background: white;
+            background: #faf8f3;
             border-radius: 16px;
             transition: all 0.3s ease;
-            border: 1px solid #d4e0ea;
+            border: 1px solid #cfc6a8;
         }
         .document-list a:hover {
             transform: translateX(8px);
-            border-color: #c4a747;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            background: #fffef8;
+            border-color: #c9a53b;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: #fffef5;
         }
         .doc-icon {
             font-size: 36px;
@@ -75,34 +92,37 @@
         .doc-title {
             font-weight: 700;
             font-size: 18pt;
-            color: #1f6392;
+            color: #5c6e3f;
             font-family: 'Oswald', sans-serif;
         }
         .doc-description {
             font-size: 11pt;
-            color: #5a7d9a;
+            color: #7a6b48;
             margin-top: 5px;
-        }
-        .doc-badge {
-            background: #c4a747;
-            color: #1f4b6e;
-            padding: 5px 14px;
-            border-radius: 30px;
-            font-size: 10pt;
-            font-weight: 700;
-            letter-spacing: 0.5px;
         }
         .footer {
             margin-top: 40px;
             text-align: center;
             padding-top: 20px;
-            border-top: 1px solid #d4e0ea;
-            color: #8aa0b5;
+            border-top: 1px solid #cfc6a8;
+            color: #8a7a55;
             font-size: 9pt;
+            font-weight: 500;
         }
         .version {
             margin-top: 10px;
             font-size: 8pt;
+            color: #6b5e3e;
+        }
+        .badge {
+            display: inline-block;
+            background: #4a5b3e;
+            color: #f0ede8;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 8pt;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
         }
         @media print {
             body {
@@ -119,38 +139,51 @@
 </head>
 <body>
 <div class="container">
-    <h1>📡 ATC · DOCUMENTACIÓN OFICIAL</h1>
-    <div class="subtitle">Fuerza Aérea · Material de referencia autorizado</div>
+    <div class="header-title">
+        <img src="https://i.imgur.com/gv9TusJ.png" alt="National Guard Logo">
+        <h1>NG · DOCUMENTACIÓN OFICIAL</h1>
+    </div>
+    <div class="subtitle">Guardia Nacional · Material de referencia autorizado</div>
     
     <ul class="document-list">
         <!-- DOCUMENTO 1: DIAGRAMA DE PISTAS -->
         <li>
             <a href="diagramas-pistas.html">
-                <div class="doc-icon">✈️</div>
+                <div class="doc-icon">⚙️</div>
                 <div class="doc-info">
                     <div class="doc-title">Diagrama de Pistas de Aterrizaje</div>
-                    <div class="doc-description">Cartas aeronáuticas oficiales · Fort Zancudo · LSIA · Cayo Perico · USS Independence · Sandy Shores</div>
+                    <div class="doc-description">Cartas aeronáuticas oficiales · Zonas de operación · Puntos de despliegue táctico</div>
                 </div>
-                <div class="doc-badge">PRINCIPAL</div>
+            </a>
+        </li>
+
+        <!-- DOCUMENTO 2: FLOTA -->
+        <li>
+            <a href="flota.html">
+                <div class="doc-icon">🚁</div>
+                <div class="doc-info">
+                    <div class="doc-title">Flota de aeronaves de la Guardia Nacional</div>
+                    <div class="doc-description">Catálogo de aeronaves disponibles para certificación · UH-60 · C-130 · F-16 · MQ-9</div>
+                </div>
             </a>
         </li>
         
-        <!-- DOCUMENTO 2: COMUNICACIONES ATC -->
+        <!-- DOCUMENTO 3: COMUNICACIONES -->
         <li>
             <a href="comunicaciones-atc.html">
-                <div class="doc-icon">📻</div>
+                <div class="doc-icon">📡</div>
                 <div class="doc-info">
-                    <div class="doc-title">Comunicaciones ATC</div>
-                    <div class="doc-description">Fraseología aeronáutica · Protocolos de radio · Códigos y procedimientos de comunicación</div>
+                    <div class="doc-title">Comunicaciones Tácticas</div>
+                    <div class="doc-description">Fraseología militar · Protocolos de radio · Códigos y procedimientos de comunicación</div>
                 </div>
-                <div class="doc-badge">GUÍA</div>
             </a>
         </li>
     </ul>
     
     <div class="footer">
-        Fuerza Aérea · Documentación Oficial ATC<br>
-        <div class="version">Versión 1.0 · Marzo 2026</div>
+        Guardia Nacional · Documentación Oficial<br>
+        <div class="version">Versión 2.0 · Marzo 2026</div>
+        <div class="badge">CLASIFICADO · USO AUTORIZADO</div>
     </div>
 </div>
 
@@ -240,13 +273,12 @@
         return true;
     };
     
-    // 5. Detectar apertura de consola y mostrar advertencia (opcional)
-    // Detección básica de consola abierta
+    // 5. Detectar apertura de consola y mostrar advertencia
     (function() {
         const devtools = /./;
         devtools.toString = function() {
-            console.log('%c⚠️ DOCUMENTO PROTEGIDO ⚠️', 'color: red; font-size: 18px; font-weight: bold;');
-            console.log('%cNo está autorizado el uso de herramientas de desarrollo', 'color: orange; font-size: 14px;');
+            console.log('%c⚠️ DOCUMENTO CLASIFICADO - GUARDIA NACIONAL ⚠️', 'color: #c9a53b; font-size: 18px; font-weight: bold;');
+            console.log('%cAcceso restringido · Uso no autorizado de herramientas de desarrollo', 'color: #8b7a4b; font-size: 14px;');
             return 'protected';
         };
         console.log(devtools);
@@ -271,21 +303,11 @@
         }
     });
     
-    // 8. Limpiar consola periódicamente (opcional, para dificultar debugging)
-    // setInterval(function() {
-    //     console.clear();
-    // }, 1000);
+    // 8. Mensaje en consola de advertencia
+    console.log('%c🚫 DOCUMENTO CLASIFICADO - GUARDIA NACIONAL 🚫', 'color: #c9a53b; font-size: 16px; font-weight: bold; background: #2d3e2b; padding: 4px;');
+    console.log('%cAcceso restringido al personal autorizado', 'color: #8b7a4b; font-size: 12px;');
     
-    // 9. Prevenir que se pueda ver el código mediante eventos
-    window.addEventListener('beforeunload', function() {
-        // No hacer nada, solo prevención
-    });
-    
-    // 10. Mensaje en consola de advertencia
-    console.log('%c🚫 DOCUMENTO CONFIDENCIAL - ACCESO NO AUTORIZADO 🚫', 'color: red; font-size: 16px; font-weight: bold; background: black; padding: 4px;');
-    console.log('%cEl uso de herramientas de desarrollo está prohibido', 'color: orange; font-size: 12px;');
-    
-    // 11. Bloquear que se pueda hacer clic derecho en imágenes
+    // 9. Bloquear que se pueda hacer clic derecho en imágenes
     const allImages = document.querySelectorAll('img');
     allImages.forEach(img => {
         img.addEventListener('contextmenu', function(e) {
