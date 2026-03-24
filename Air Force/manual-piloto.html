@@ -9,13 +9,10 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      user-select: none; /* Evita selección de texto */
+      user-select: none;
       -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
     }
 
-    /* Permite selección solo en campos de texto si los hubiera */
     input, textarea {
       user-select: text;
       -webkit-user-select: text;
@@ -45,7 +42,8 @@
 
     .page {
       width: 210mm;
-      height: 297mm;
+      min-height: 297mm;
+      height: auto;
       background: #f5f7fc;
       position: relative;
       padding: 8mm 10mm 8mm 10mm;
@@ -54,11 +52,13 @@
       page-break-after: always;
       break-inside: avoid;
       box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+      margin-bottom: 5mm;
       background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.02"><path fill="%23336699" d="M50 15 L70 35 L65 55 L50 70 L35 55 L30 35 Z M50 30 L60 40 L55 55 L50 62 L45 55 L40 40 Z" /></svg>');
       background-repeat: repeat;
       background-size: 60px 60px;
     }
 
+    /* Para impresión, mantener saltos de página */
     @media print {
       body {
         background: white;
@@ -67,13 +67,23 @@
         box-shadow: none;
         border: none;
         background-image: none;
+        margin-bottom: 0;
+        page-break-after: always;
+        break-inside: avoid;
       }
-      /* Bloquear impresión desde el navegador */
-      body {
-        visibility: hidden;
-      }
-      .manual {
-        visibility: visible;
+      body::before {
+        content: "Documento Protegido - Impresión no autorizada";
+        display: block;
+        text-align: center;
+        background: red;
+        color: white;
+        padding: 10px;
+        font-size: 14px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
       }
     }
 
@@ -183,14 +193,13 @@
       border-radius: 8px;
     }
 
-    /* IMÁGENES DE DIAGRAMAS - TAMAÑO GRANDE */
     .airport-diagram {
       width: 100%;
       margin: 1mm 0 3mm;
       text-align: center;
       background: #fff;
       border-radius: 16px;
-      padding: 6mm 4mm;
+      padding: 4mm;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       border: 1px solid #d4e0ea;
     }
@@ -201,51 +210,18 @@
       height: auto;
       object-fit: contain;
       border-radius: 12px;
-      margin-bottom: 4mm;
       box-shadow: 0 2px 8px rgba(0,0,0,0.12);
       pointer-events: none;
       -webkit-user-drag: none;
-      user-drag: none;
     }
     
     .diagram-large {
-      max-height: 550px !important;
-      min-height: 480px !important;
+      max-height: 400px !important;
       width: auto !important;
       max-width: 100% !important;
       object-fit: contain !important;
     }
     
-    .airport-diagram img {
-      max-height: 550px;
-      min-height: 480px;
-      width: auto;
-      max-width: 100%;
-      object-fit: contain;
-    }
-    
-    .legend-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2.5mm;
-      justify-content: center;
-      font-size: 8.5pt;
-      background: #f0f4f9;
-      padding: 2.5mm;
-      border-radius: 14px;
-      margin-top: 2mm;
-    }
-    .legend-badge {
-      background: white;
-      padding: 1mm 5px;
-      border-radius: 24px;
-      font-weight: 600;
-      color: #1f6392;
-      font-family: monospace;
-      font-size: 8.5pt;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
     .cover-logos {
       display: flex;
       justify-content: center;
@@ -258,8 +234,6 @@
       height: 85px;
       width: auto;
       pointer-events: none;
-      -webkit-user-drag: none;
-      user-drag: none;
     }
     .cover-title {
       text-align: center;
@@ -271,12 +245,7 @@
       margin: 3mm 0;
       color: #1f4b6e;
     }
-    .cover-title h2 {
-      font-family: Oswald;
-      font-weight: 500;
-      font-size: 34pt;
-      color: #c4a747;
-    }
+    
     .golden-rule {
       background: #fff8e7;
       border: 2px solid #c4a747;
@@ -285,12 +254,7 @@
       text-align: center;
       margin: 4mm 0;
     }
-    .golden-rule h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 20pt;
-      color: #1f4b6e;
-      margin-bottom: 2mm;
-    }
+    
     .signature-box {
       border: 2px solid #c4a747;
       width: 75mm;
@@ -300,6 +264,7 @@
       background-color: #fefcf5;
       border-radius: 8px;
     }
+    
     .small-print {
       font-size: 8pt;
       text-align: center;
@@ -309,330 +274,347 @@
       padding-top: 4mm;
       width: 100%;
     }
-    .disclaimer-bottom {
-      font-size: 8pt;
-      text-align: center;
-      color: #8aa0b5;
-      margin-top: 4mm;
-    }
     
-    .page .page-content {
-      overflow-y: auto;
-      overflow-x: visible;
-    }
-    
-    @media print {
-      .airport-diagram img {
-        max-height: 145mm !important;
-        min-height: 130mm !important;
-        width: auto !important;
-        max-width: 180mm !important;
-        object-fit: contain !important;
-      }
-      .page {
-        padding: 5mm 8mm 5mm 8mm;
-      }
-      /* Advertencia de impresión deshabilitada */
-      body::before {
-        content: "Documento Protegido - Impresión no autorizada";
-        display: block;
-        text-align: center;
-        background: red;
-        color: white;
-        padding: 10px;
-        font-size: 14px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
-      }
-    }
-    
-    /* Bloquear selección de texto adicional */
     ::selection {
       background: transparent;
     }
     
-    /* Ocultar el cursor de selección en elementos */
     p, h1, h2, h3, h4, span, div {
       user-select: none;
       -webkit-user-select: none;
+    }
+
+    /* Estilo para imágenes pequeñas en tablas */
+    .inline-img {
+      max-width: 100%;
+      margin: 2mm 0;
+      border-radius: 8px;
+    }
+    
+    .metar-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2mm 0;
+    }
+    .metar-table td {
+      vertical-align: top;
+      padding: 2mm;
+      border: 1px solid #d4e0ea;
+      background: white;
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="manual">
-  <!-- PÁGINA 1 - PORTADA -->
-  <div class="page">
-    <div class="cover-logos">
-      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force">
-      <img src="https://i.imgur.com/wioFUxA.png" alt="AETC">
-    </div>
-    <div class="page-content">
-      <div class="cover-title">
-        <h1>MANUAL DEL PILOTO</h1>
-        <div style="height: 2px; background: #c4a747; width: 60%; margin: 5mm auto;"></div>
-        <p style="font-size: 15pt; margin-top: 8mm;"><span style="background: #1f4b6e; color: white; padding: 4px 20px; border-radius: 40px;">ATC · FORMACIÓN AERONÁUTICA</span></p>
-        <p style="font-size: 12pt; margin-top: 8mm;">Fase de Tierra • Conocimiento Fundamental • Seguridad Operacional</p>
-      </div>
-    </div>
-    <div class="page-footer">
-      <span class="footer-note">Fuerza Aérea · Alto Mando</span>
-      <span class="page-number">1</span>
-    </div>
-  </div>
-
-  <!-- PÁGINA 2 - Introducción fase tierra -->
-  <div class="page">
-    <div class="page-header">
-      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
-      <span class="header-title">Manual de Pilotos · Fase Tierra</span>
-      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce" style="opacity:0.8;">
-    </div>
-    <div class="page-content">
-      <div class="section-title">Manual de Pilotos</div>
-      <div class="text-block">
-        <span class="info-label">✈️ INTRODUCCIÓN A LA FASE DE TIERRA</span>
-        <div class="info-text">
-          La fase de tierra es la etapa inicial de la formación de un piloto. Antes de poder operar una aeronave, es necesario adquirir una base sólida de conocimientos teóricos que servirán como fundamento para el entrenamiento práctico en vuelo. Esta fase busca desarrollar la comprensión de los principios fundamentales de la aviación, la seguridad operacional y las responsabilidades que conlleva ser piloto.
-        </div>
-      </div>
-      <div class="subsection-title">Objetivos de la fase de tierra</div>
-      <div class="highlight-box">
-        <strong>Brindar conocimientos básicos de aviación:</strong> comprender cómo y por qué vuela un avión.<br><br>
-        <strong>Familiarizar al alumno con la terminología aeronáutica:</strong> uso correcto de conceptos técnicos y del alfabeto aeronáutico.<br><br>
-        <strong>Desarrollar conciencia situacional:</strong> reconocer factores de riesgo en tierra y aire.<br><br>
-        <strong>Introducir al estudiante en la normativa aérea:</strong> reglas de vuelo, regulaciones y procedimientos estándar.<br><br>
-        <strong>Preparar para el vuelo práctico:</strong> dotar al piloto de herramientas teóricas que faciliten su desempeño en cabina.
-      </div>
-      <div class="subsection-title">Contenidos fundamentales de la fase de tierra</div>
-      <div class="text-block">
-        <div class="info-text">
-          La instrucción en tierra cubre varias áreas esenciales:<br><br>
-          • <strong>Aerodinámica básica:</strong> comprensión de las fuerzas que actúan sobre una aeronave (sustentación, peso, empuje y resistencia).<br>
-          • <strong>Conocimiento general de la aeronave:</strong> partes principales, funcionamiento de controles y sistemas básicos.<br>
-          • <strong>Meteorología aeronáutica:</strong> interpretación de fenómenos atmosféricos que afectan la seguridad del vuelo.<br>
-          • <strong>Altimetría y navegación:</strong> principios básicos de orientación, cartas aeronáuticas y uso de instrumentos.<br>
-          • <strong>Regulaciones aéreas:</strong> normas internacionales y nacionales para operaciones de vuelo.<br>
-          • <strong>Fraseología aeronáutica:</strong> lenguaje normalizado para radiocomunicaciones.<br>
-          • <strong>Seguridad operacional:</strong> prevención de riesgos y cultura de seguridad.
-        </div>
-      </div>
-      <div class="highlight-box">
-        <span class="info-label">📌 IMPORTANCIA DE LA FASE DE TIERRA</span>
-        <div class="info-text">Seguridad: Un piloto que domina la teoría está mejor preparado para enfrentar emergencias. Eficiencia: El entrenamiento práctico se optimiza cuando el estudiante ya maneja los conceptos teóricos. Disciplina: Introduce al alumno a la cultura organizacional y jerárquica de la aviación.</div>
-      </div>
-      <div class="info-text"><strong>Ejemplo aplicado:</strong> Antes de realizar un primer vuelo de instrucción, un alumno debe saber identificar las partes principales de la aeronave, conocer cómo funcionan los mandos básicos, estar familiarizado con las condiciones meteorológicas mínimas y entender las reglas básicas de circulación en un aeródromo.</div>
-    </div>
-    <div class="page-footer">
-      <span class="footer-note">Fuerza Aérea · Doctrina ATC</span>
-      <span class="page-number">2</span>
-    </div>
-  </div>
-
-  <!-- PÁGINA 3 - Aerodinámica (ala fija) -->
-  <div class="page">
-    <div class="page-header">
-      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
-      <span class="header-title">Aerodinámica · Ala Fija</span>
-      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
-    </div>
-    <div class="page-content">
-      <div class="section-title">Aerodinámica</div>
-      <div class="info-text" style="margin-bottom: 2mm;">
-        La aerodinámica es la rama de la física que estudia el movimiento del aire y cómo este interactúa con los cuerpos que se desplazan a través de él, en especial las aeronaves. Comprender la aerodinámica es esencial para un piloto, ya que explica cómo se produce el vuelo, cómo se controla una aeronave y cuáles son los límites operativos que deben respetarse.
-      </div>
-      <div class="subsection-title">Aerodinámica en aviones de ala fija</div>
-      <div class="info-text">
-        Los aviones de ala fija dependen del diseño de sus alas para generar la sustentación necesaria que les permite volar. Las alas tienen un perfil aerodinámico (airfoil) que, gracias a su forma, acelera el aire en la parte superior y lo desacelera en la inferior.
-      </div>
-      <div class="highlight-box">
-        <strong>Fuerzas que actúan en el avión</strong><br>
-        Sustentación (Lift): fuerza ascendente generada principalmente por las alas.<br>
-        Peso (Weight): fuerza descendente producida por la gravedad.<br>
-        Empuje (Thrust): fuerza hacia adelante generada por motores o hélices.<br>
-        Resistencia (Drag): fuerza opuesta al movimiento hacia adelante.
-      </div>
-      <div class="airport-diagram" style="padding: 2mm;">
-        <img src="https://i.imgur.com/rlXIHhH.png" alt="Fuerzas aerodinámicas" class="diagram-large" style="max-height: 300px; min-height: auto;">
-      </div>
-    </div>
-    <div class="page-footer">
-      <span class="footer-note">Fuerza Aérea · Principios de Vuelo</span>
-      <span class="page-number">3</span>
-    </div>
-  </div>
-
-  <!-- PÁGINA 4 - Leyes sustentación + controles -->
-  <div class="page">
-    <div class="page-header">
-      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
-      <span class="header-title">Leyes y Controles</span>
-      <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
-    </div>
-    <div class="page-content">
-      <div class="subsection-title">Leyes que actúan sobre la sustentación</div>
-      <div class="info-text"><strong>Principio de Bernoulli:</strong> el aire que circula más rápido por la parte superior del ala tiene menor presión que el que circula por debajo, creando sustentación.</div>
-      <div class="airport-diagram" style="padding: 1mm;"><img src="https://i.imgur.com/tKT75jO.png" style="max-height: 200px;"></div>
-      <div class="info-text"><strong>Tercera Ley de Newton:</strong> a toda acción corresponde una reacción; el aire desviado hacia abajo produce una reacción hacia arriba en el ala.</div>
-      <div class="airport-diagram" style="padding: 1mm;"><img src="https://i.imgur.com/SqXSwuV.png" style="max-height: 180px;"></div>
-      <div class="subsection-title">Controles de vuelo de un avión</div>
-      <div class="info-text">Alerones: ubicados en las alas, controlan el alabeo (roll).<br>Elevadores: en la cola, controlan el cabeceo (pitch).<br>Timón de dirección: en la deriva vertical, controla la guiñada (yaw).</div>
-      <div class="highlight-box"><strong>Ejemplo aplicado:</strong> Cuando un piloto gira el control a la izquierda, el alerón derecho baja y el izquierdo sube, generando más sustentación en el ala derecha y menos en la izquierda; el avión se inclina hacia la izquierda, iniciando el viraje.</div>
-      <div class="airport-diagram"><img src="https://i.imgur.com/sqAp6kn.png" style="max-height: 160px;"></div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Control de Vuelo</span><span class="page-number">4</span></div>
-  </div>
-
-  <!-- PÁGINA 5 - Aerodinámica helicópteros -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Aerodinámica · Rotor</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Aerodinámica en helicópteros</div>
-      <div class="info-text">A diferencia de los aviones, los helicópteros generan sustentación mediante las palas del rotor principal, que actúan como un ala en movimiento.</div>
-      <div class="highlight-box"><strong>Fuerzas principales:</strong> Sustentación y Empuje (generados por el rotor), Peso (gravedad), Resistencia (oposición del aire).</div>
-      <div class="subsection-title">Controles de vuelo de helicópteros</div>
-      <div class="info-text">Cíclico: controla la inclinación del helicóptero hacia adelante, atrás o lateral.<br>Colectivo: modifica el ángulo de las palas para aumentar o reducir la sustentación general.<br>Pedales de dirección: controlan el rotor de cola para mantener el control de la guiñada.</div>
-      <div class="airport-diagram"><img src="https://i.imgur.com/YuljREM.png" class="diagram-large" style="max-height: 280px;"></div>
-      <div class="info-text"><strong>Ejemplo aplicado:</strong> Si el piloto tira hacia arriba del colectivo, aumenta el ángulo de ataque de las palas, generando más sustentación y provocando que el helicóptero ascienda verticalmente.</div>
-      <div class="highlight-box">Importancia: Seguridad evita stall; eficiencia optimiza consumo; control asegura respuesta adecuada en fases de vuelo.</div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Ala Rotatoria</span><span class="page-number">5</span></div>
-  </div>
-
-  <!-- PÁGINA 6 - Meteorología Aeronáutica -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Meteorología Aeronáutica</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Meteorología Aeronáutica</div>
-      <div class="info-text">La meteorología aeronáutica es la aplicación de la ciencia del clima y la atmósfera al ámbito de la aviación. Conocer el tiempo es esencial para garantizar operaciones seguras.</div>
-      <div class="subsection-title">Elementos Clave del Clima</div>
-      <div class="info-text">Temperatura, Presión atmosférica, Humedad, Viento (dirección e intensidad).</div>
-      <div class="subsection-title">Fenómenos Meteorológicos Significativos</div>
-      <div class="info-text">Tormentas eléctricas, Cizalladura del viento (Wind Shear), Turbulencia, Niebla, Engelamiento.</div>
-      <div class="subsection-title">Herramientas y Tecnologías Meteorológicas</div>
-      <div class="info-text">METAR (informe actual), TAF (pronóstico), Radar meteorológico, Satélites.</div>
-      <div class="highlight-box"><strong>METAR (Meteorological Aerodrome Report):</strong> informe codificado con viento, visibilidad, fenómenos, nubosidad, temperatura, presión.<br>Ejemplo: METAR LSIA 201200Z 18008KT 9999 SCT025 30/20 Q1015</div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Climatología</span><span class="page-number">6</span></div>
-  </div>
-
-  <!-- PÁGINA 7 - Diccionario METAR -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Diccionario METAR</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Diccionario METAR</div>
-      <div class="text-block"><span class="info-label">Calificador Intensidad/Proximidad</span><div class="info-text">- (Leve) · (Sin calificador) Moderado · + (Fuerte) · VC (En las proximidades)</div></div>
-      <div class="text-block"><span class="info-label">Descriptor</span><div class="info-text">MI (Baja) · BC (Bancos) · PR (Parcial) · DR (Levantado viento baja altura) · BL (Blowing) · SH (Chubascos) · TS (Tormenta) · FZ (Engelante)</div></div>
-      <div class="text-block"><span class="info-label">Fenómenos Meteorológicos - Precipitación</span><div class="info-text">DZ (Llovizna) · RA (Lluvia) · SN (Nieve) · SG (Granos de nieve) · IC (Cristales hielo) · PL (Hielo granulado) · GR (Granizo) · GS (Granizo pequeño) · UP (Desconocida)</div></div>
-      <div class="text-block"><span class="info-label">Oscurecimiento</span><div class="info-text">BR (Neblina) · FG (Niebla) · FU (Humo) · VA (Cenizas volcánicas) · DU (Polvo) · SA (Arena) · HZ (Calima)</div></div>
-      <div class="text-block"><span class="info-label">Otros</span><div class="info-text">PO (Remolinos) · SQ (Turbonada) · FC (Tornado/tromba) · SS (Tempestad arena) · DS (Tempestad polvo)</div></div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Códigos METAR</span><span class="page-number">7</span></div>
-  </div>
-
-  <!-- PÁGINA 8 - Importancia Meteorología + Regulaciones -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Regulaciones Aéreas</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Importancia de la Meteorología</div>
-      <div class="info-text">Permite planificar rutas seguras, decidir alternos, mejorar conciencia situacional y reducir riesgos operativos.</div>
-      <div class="subsection-title">Regulaciones Aéreas</div>
-      <div class="info-text">Conjunto de normas que garantizan seguridad operacional y armonización internacional. Organismos: OACI, FAA, EASA, y autoridades nacionales (DGAC).</div>
-      <div class="highlight-box">Clasificación de Aeropuertos: Internacionales, Nacionales/Regionales, Aeródromos Locales.<br>Áreas Técnicas: Pistas (RWY), Calles de Rodaje, Rampas, Bermas, Umbral, Orientación Magnética, TDZ.</div>
-      <div class="airport-diagram"><img src="https://i.imgur.com/ZrY63Zd.png" style="max-height: 180px;"></div>
-      <div class="info-text"><strong>Luces de pista:</strong> Blanco (eje), Rojo (fin), Verde (inicio), Azul (calles de rodaje). Colores estandarizados.</div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Normativa</span><span class="page-number">8</span></div>
-  </div>
-
-  <!-- PÁGINA 9 - METAR Fort Zancudo + LSIA -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Ejemplos METAR I</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Ejemplos de METAR</div>
-      <div class="text-block"><span class="info-label">Fort Zancudo (FZ)</span><img src="https://i.imgur.com/7cOKJm1.png" style="max-width: 100%; margin: 2mm 0;"><div class="info-text">METAR FZ 261450Z 08015G25KT 5SM TSRA BR BKN030CB 25/20 A2992 RMK MIL EXP BLDU FU<br>Viento 080°15G25, visibilidad 5SM, tormenta con lluvia, neblina, nubes BKN030CB, temp 25/20, presión 29.92. Actividad militar, explosiones, polvo/humo.</div></div>
-      <div class="text-block"><span class="info-label">LSIA (Los Santos Intl)</span><img src="https://i.imgur.com/48GnY50.png" style="max-width: 100%; margin: 2mm 0;"><div class="info-text">METAR LSIA 261500Z VRB03KT 10SM HZ FEW030 28/22 A2995 RMK HZ<br>Viento variable 3KT, visibilidad 10SM, calima, nubes FEW030, temperatura 28/22, presión 29.95.</div></div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Reportes</span><span class="page-number">9</span></div>
-  </div>
-
-  <!-- PÁGINA 10 - METAR Sandy Shores + Grapeseed -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Ejemplos METAR II</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="text-block"><span class="info-label">Sandy Shores (SS)</span><img src="https://i.imgur.com/WcFbO5C.png" style="max-width: 100%;"><div class="info-text">METAR SS 261400Z 35015G25KT 1/2SM DU BKN020 32/18 A2980 RMK BLDU<br>Viento 350°15G25, visibilidad 0.5SM, polvo, nubes BKN020, temp 32/18, polvo levantado.</div></div>
-      <div class="text-block"><span class="info-label">Grapeseed (GP)</span><img src="https://i.imgur.com/XypuU1j.png" style="max-width: 100%;"><div class="info-text">METAR GP 261430Z 00000KT 5SM -RA BR SCT015 OVC040 18/17 A2990<br>Viento calma, visibilidad 5SM, lluvia leve, neblina, nubes SCT015 OVC040, temp 18/17.</div></div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Reportes METAR</span><span class="page-number">10</span></div>
-  </div>
-
-  <!-- PÁGINA 11 - METAR Cayo Perico + USS Independence -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Ejemplos METAR III</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="text-block"><span class="info-label">Cayo Perico (CP)</span><img src="https://i.imgur.com/QTud5W8.png" style="max-width: 100%;"><div class="info-text">METAR CP 261200Z 12012KT 10SM SHRA SCT025TCU BKN080 30/25 A2998 RMK ISL<br>Viento 120°12KT, visibilidad 10SM, chubascos lluvia, nubes SCT025TCU BKN080, temp 30/25, isla tropical.</div></div>
-      <div class="text-block"><span class="info-label">USS Independence (USS)</span><img src="https://i.imgur.com/UtLwe9c.png" style="max-width: 100%;"><div class="info-text">METAR USS 261100Z 18020KT 10SM +SHRA BKN030CB 28/24 A2996 RMK NAVY FC<br>Viento 180°20KT, visibilidad 10SM, chubascos fuertes, nubes BKN030CB, temp 28/24, actividad naval, tromba marina.</div></div>
-      <div class="highlight-box">Estos códigos estandarizan operaciones y evitan confusiones en planes de vuelo y coordinación ATC.</div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Códigos OACI</span><span class="page-number">11</span></div>
-  </div>
-
-  <!-- PÁGINA 12 - Clasificación y Áreas Técnicas ampliado -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Infraestructura Aeroportuaria</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Clasificación de Aeropuertos</div>
-      <div class="info-text">Internacionales (aduanas/migración), Nacionales/Regionales, Aeródromos Locales.</div>
-      <div class="subsection-title">Áreas Técnicas</div>
-      <div class="info-text">Pistas (RWY), Calles de Rodaje (Taxiways), Rampas (Aprons), Bermas, Umbral, Orientación magnética, Líneas de Toma de Contacto (TDZ).</div>
-      <div class="airport-diagram"><img src="https://i.imgur.com/ZrY63Zd.png" style="max-height: 180px;"></div>
-      <div class="highlight-box"><strong>Luces de Pista:</strong> Blanco (eje), Rojo (fin), Verde (inicio), Azul (rodaje). Significado estandarizado: verde inicio seguro, rojo prohibición, blanco orientación, azul delimitación.</div>
-      <div class="info-text">Importancia: unificación mundial, seguridad, disciplina. El piloto debe conocerlas, cumplirlas y mantenerse actualizado.</div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Infraestructura</span><span class="page-number">12</span></div>
-  </div>
-
-  <!-- PÁGINA 13 - Navegación Aeronáutica -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Navegación Aeronáutica</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Navegación Aeronáutica</div>
-      <div class="info-text">Proceso mediante el cual el piloto determina posición, planifica ruta y mantiene control de la trayectoria.</div>
-      <div class="subsection-title">Rosa de los Vientos</div>
-      <div class="info-text">Representación gráfica de los 360°: Norte (0°), Este (90°), Sur (180°), Oeste (270°), subdividido en NE, SE, SO, NO.</div>
-      <div class="subsection-title">Conceptos básicos: Rumbo, Curso, Trayectoria</div>
-      <div class="info-text">Rumbo: dirección de la nariz. Curso: trayectoria planeada. Trayectoria: línea real sobre terreno.</div>
-      <div class="subsection-title">Cartas de Navegación, Instrumentos y Radioayudas</div>
-      <div class="info-text">VFR / IFR, Brújula, HSI, GPS, DME, ADF, VOR, ILS, NDB. Ejemplo práctico: vuelo Fort Zancudo - Sandy Shores, curso 045°, viento del norte, rumbo corregido 050°.</div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Navegación</span><span class="page-number">13</span></div>
-  </div>
-
-  <!-- PÁGINA 14 - Procedimientos Radiotelefónicos -->
-  <div class="page">
-    <div class="page-header"><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"><span class="header-title">Fraseología Aeronáutica</span><img src="https://i.imgur.com/GfmYqNX.png" class="logo-airforce"></div>
-    <div class="page-content">
-      <div class="section-title">Procedimientos Radiotelefónicos</div>
-      <div class="info-text">Conjunto de técnicas, frases y normas para comunicación por radio en aviación, garantizando seguridad y eficiencia.</div>
-      <div class="subsection-title">Alfabeto Aeronáutico (OTAN/ICAO)</div>
-      <div class="info-text">Alfa, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, Yankee, Zulu.</div>
-      <div class="highlight-box">Números: cada dígito por separado; 9 = Niner; 3 = Tree; 5 = Fife.</div>
-      <div class="subsection-title">Fraseología estándar</div>
-      <div class="info-text">Wilco, Roger, Affirm, Negative, Stand by, Say again, Cleared for takeoff, Cleared to land, Unable.</div>
-      <div class="text-block"><span class="info-label">Ejemplo de comunicación</span><div class="info-text">Piloto: “Fort Zancudo Torre, Alfa Bravo Charlie Delta listo en cabecera pista principal, autorizado despegue IFR Sandy Shores.”<br>Controlador: “Alfa Bravo Charlie Delta, autorizado despegue pista principal, viento 180 grados 08 nudos.”<br>Readback: “Autorizado despegue pista principal, viento 180 grados 08 nudos, Alfa Bravo Charlie Delta.”</div></div>
-    </div>
-    <div class="page-footer"><span class="footer-note">Fuerza Aérea · Comunicaciones</span><span class="page-number">14</span></div>
-  </div>
+<div class="manual" id="manualContainer">
+  <!-- El contenido se generará dinámicamente con JavaScript para paginado automático -->
 </div>
 
 <script>
-    // Bloqueos de seguridad (original)
+    // ============================================
+    // DEFINICIÓN DE TODO EL CONTENIDO (SECCIONES)
+    // ============================================
+    // Cada sección es un bloque que se insertará en las páginas
+    // El sistema automáticamente distribuirá estos bloques en páginas de altura fija
+    
+    const contentSections = [];
+    
+    // Helper para agregar secciones fácilmente
+    function addSection(htmlContent, isPageBreak = false) {
+        contentSections.push({ html: htmlContent, forcePageBreak: isPageBreak });
+    }
+    
+    // ========== PÁGINA 1 - PORTADA ==========
+    addSection(`
+        <div class="cover-logos">
+            <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force">
+            <img src="https://i.imgur.com/wioFUxA.png" alt="AETC">
+        </div>
+        <div class="cover-title">
+            <h1>MANUAL DEL PILOTO</h1>
+            <div style="height: 2px; background: #c4a747; width: 60%; margin: 5mm auto;"></div>
+            <p style="font-size: 15pt; margin-top: 8mm;"><span style="background: #1f4b6e; color: white; padding: 4px 20px; border-radius: 40px;">ATC · FORMACIÓN AERONÁUTICA</span></p>
+            <p style="font-size: 12pt; margin-top: 8mm;">Fase de Tierra • Conocimiento Fundamental • Seguridad Operacional</p>
+        </div>
+    `, true);
+    
+    // ========== PÁGINA 2 - Introducción fase tierra ==========
+    addSection(`
+        <div class="section-title">Manual de Pilotos</div>
+        <div class="text-block">
+            <span class="info-label">✈️ INTRODUCCIÓN A LA FASE DE TIERRA</span>
+            <div class="info-text">La fase de tierra es la etapa inicial de la formación de un piloto. Antes de poder operar una aeronave, es necesario adquirir una base sólida de conocimientos teóricos que servirán como fundamento para el entrenamiento práctico en vuelo. Esta fase busca desarrollar la comprensión de los principios fundamentales de la aviación, la seguridad operacional y las responsabilidades que conlleva ser piloto.</div>
+        </div>
+        <div class="subsection-title">Objetivos de la fase de tierra</div>
+        <div class="highlight-box">
+            <strong>Brindar conocimientos básicos de aviación:</strong> comprender cómo y por qué vuela un avión.<br><br>
+            <strong>Familiarizar al alumno con la terminología aeronáutica:</strong> uso correcto de conceptos técnicos y del alfabeto aeronáutico.<br><br>
+            <strong>Desarrollar conciencia situacional:</strong> reconocer factores de riesgo en tierra y aire.<br><br>
+            <strong>Introducir al estudiante en la normativa aérea:</strong> reglas de vuelo, regulaciones y procedimientos estándar.<br><br>
+            <strong>Preparar para el vuelo práctico:</strong> dotar al piloto de herramientas teóricas que faciliten su desempeño en cabina.
+        </div>
+        <div class="subsection-title">Contenidos fundamentales de la fase de tierra</div>
+        <div class="text-block">
+            <div class="info-text">
+                La instrucción en tierra cubre varias áreas esenciales:<br><br>
+                • <strong>Aerodinámica básica:</strong> comprensión de las fuerzas que actúan sobre una aeronave (sustentación, peso, empuje y resistencia).<br>
+                • <strong>Conocimiento general de la aeronave:</strong> partes principales, funcionamiento de controles y sistemas básicos.<br>
+                • <strong>Meteorología aeronáutica:</strong> interpretación de fenómenos atmosféricos que afectan la seguridad del vuelo.<br>
+                • <strong>Altimetría y navegación:</strong> principios básicos de orientación, cartas aeronáuticas y uso de instrumentos.<br>
+                • <strong>Regulaciones aéreas:</strong> normas internacionales y nacionales para operaciones de vuelo.<br>
+                • <strong>Fraseología aeronáutica:</strong> lenguaje normalizado para radiocomunicaciones.<br>
+                • <strong>Seguridad operacional:</strong> prevención de riesgos y cultura de seguridad.
+            </div>
+        </div>
+        <div class="highlight-box">
+            <span class="info-label">📌 IMPORTANCIA DE LA FASE DE TIERRA</span>
+            <div class="info-text">Seguridad: Un piloto que domina la teoría está mejor preparado para enfrentar emergencias. Eficiencia: El entrenamiento práctico se optimiza cuando el estudiante ya maneja los conceptos teóricos. Disciplina: Introduce al alumno a la cultura organizacional y jerárquica de la aviación.</div>
+        </div>
+        <div class="info-text"><strong>Ejemplo aplicado:</strong> Antes de realizar un primer vuelo de instrucción, un alumno debe saber identificar las partes principales de la aeronave, conocer cómo funcionan los mandos básicos, estar familiarizado con las condiciones meteorológicas mínimas y entender las reglas básicas de circulación en un aeródromo.</div>
+    `);
+    
+    // ========== PÁGINA 3 - Aerodinámica ==========
+    addSection(`
+        <div class="section-title">Aerodinámica</div>
+        <div class="info-text" style="margin-bottom: 2mm;">La aerodinámica es la rama de la física que estudia el movimiento del aire y cómo este interactúa con los cuerpos que se desplazan a través de él, en especial las aeronaves. Comprender la aerodinámica es esencial para un piloto, ya que explica cómo se produce el vuelo, cómo se controla una aeronave y cuáles son los límites operativos que deben respetarse.</div>
+        <div class="subsection-title">Aerodinámica en aviones de ala fija</div>
+        <div class="info-text">Los aviones de ala fija dependen del diseño de sus alas para generar la sustentación necesaria que les permite volar. Las alas tienen un perfil aerodinámico (airfoil) que, gracias a su forma, acelera el aire en la parte superior y lo desacelera en la inferior.</div>
+        <div class="highlight-box">
+            <strong>Fuerzas que actúan en el avión</strong><br>
+            Sustentación (Lift): fuerza ascendente generada principalmente por las alas.<br>
+            Peso (Weight): fuerza descendente producida por la gravedad.<br>
+            Empuje (Thrust): fuerza hacia adelante generada por motores o hélices.<br>
+            Resistencia (Drag): fuerza opuesta al movimiento hacia adelante.
+        </div>
+        <div class="airport-diagram"><img src="https://i.imgur.com/rlXIHhH.png" alt="Fuerzas aerodinámicas" class="diagram-large"></div>
+    `);
+    
+    // ========== PÁGINA 4 - Leyes y Controles ==========
+    addSection(`
+        <div class="subsection-title">Leyes que actúan sobre la sustentación</div>
+        <div class="info-text"><strong>Principio de Bernoulli:</strong> el aire que circula más rápido por la parte superior del ala tiene menor presión que el que circula por debajo, creando sustentación.</div>
+        <div class="airport-diagram"><img src="https://i.imgur.com/tKT75jO.png" style="max-height: 200px;"></div>
+        <div class="info-text"><strong>Tercera Ley de Newton:</strong> a toda acción corresponde una reacción; el aire desviado hacia abajo produce una reacción hacia arriba en el ala.</div>
+        <div class="airport-diagram"><img src="https://i.imgur.com/SqXSwuV.png" style="max-height: 180px;"></div>
+        <div class="subsection-title">Controles de vuelo de un avión</div>
+        <div class="info-text">Alerones: ubicados en las alas, controlan el alabeo (roll).<br>Elevadores: en la cola, controlan el cabeceo (pitch).<br>Timón de dirección: en la deriva vertical, controla la guiñada (yaw).</div>
+        <div class="highlight-box"><strong>Ejemplo aplicado:</strong> Cuando un piloto gira el control a la izquierda, el alerón derecho baja y el izquierdo sube, generando más sustentación en el ala derecha y menos en la izquierda; el avión se inclina hacia la izquierda, iniciando el viraje.</div>
+        <div class="airport-diagram"><img src="https://i.imgur.com/sqAp6kn.png" style="max-height: 160px;"></div>
+    `);
+    
+    // ========== PÁGINA 5 - Helicópteros ==========
+    addSection(`
+        <div class="section-title">Aerodinámica en helicópteros</div>
+        <div class="info-text">A diferencia de los aviones, los helicópteros generan sustentación mediante las palas del rotor principal, que actúan como un ala en movimiento.</div>
+        <div class="highlight-box"><strong>Fuerzas principales:</strong> Sustentación y Empuje (generados por el rotor), Peso (gravedad), Resistencia (oposición del aire).</div>
+        <div class="subsection-title">Controles de vuelo de helicópteros</div>
+        <div class="info-text">Cíclico: controla la inclinación del helicóptero hacia adelante, atrás o lateral.<br>Colectivo: modifica el ángulo de las palas para aumentar o reducir la sustentación general.<br>Pedales de dirección: controlan el rotor de cola para mantener el control de la guiñada.</div>
+        <div class="airport-diagram"><img src="https://i.imgur.com/YuljREM.png" class="diagram-large" style="max-height: 280px;"></div>
+        <div class="info-text"><strong>Ejemplo aplicado:</strong> Si el piloto tira hacia arriba del colectivo, aumenta el ángulo de ataque de las palas, generando más sustentación y provocando que el helicóptero ascienda verticalmente.</div>
+        <div class="highlight-box">Importancia: Seguridad evita stall; eficiencia optimiza consumo; control asegura respuesta adecuada en fases de vuelo.</div>
+    `);
+    
+    // ========== PÁGINA 6 - Meteorología ==========
+    addSection(`
+        <div class="section-title">Meteorología Aeronáutica</div>
+        <div class="info-text">La meteorología aeronáutica es la aplicación de la ciencia del clima y la atmósfera al ámbito de la aviación. Conocer el tiempo es esencial para garantizar operaciones seguras.</div>
+        <div class="subsection-title">Elementos Clave del Clima</div>
+        <div class="info-text">Temperatura, Presión atmosférica, Humedad, Viento (dirección e intensidad).</div>
+        <div class="subsection-title">Fenómenos Meteorológicos Significativos</div>
+        <div class="info-text">Tormentas eléctricas, Cizalladura del viento (Wind Shear), Turbulencia, Niebla, Engelamiento.</div>
+        <div class="subsection-title">Herramientas y Tecnologías Meteorológicas</div>
+        <div class="info-text">METAR (informe actual), TAF (pronóstico), Radar meteorológico, Satélites.</div>
+        <div class="highlight-box"><strong>METAR (Meteorological Aerodrome Report):</strong> informe codificado con viento, visibilidad, fenómenos, nubosidad, temperatura, presión.<br>Ejemplo: METAR LSIA 201200Z 18008KT 9999 SCT025 30/20 Q1015</div>
+    `);
+    
+    // ========== PÁGINA 7 - Diccionario METAR ==========
+    addSection(`
+        <div class="section-title">Diccionario METAR</div>
+        <div class="text-block"><span class="info-label">Calificador Intensidad/Proximidad</span><div class="info-text">- (Leve) · (Sin calificador) Moderado · + (Fuerte) · VC (En las proximidades)</div></div>
+        <div class="text-block"><span class="info-label">Descriptor</span><div class="info-text">MI (Baja) · BC (Bancos) · PR (Parcial) · DR (Levantado viento baja altura) · BL (Blowing) · SH (Chubascos) · TS (Tormenta) · FZ (Engelante)</div></div>
+        <div class="text-block"><span class="info-label">Fenómenos Meteorológicos - Precipitación</span><div class="info-text">DZ (Llovizna) · RA (Lluvia) · SN (Nieve) · SG (Granos de nieve) · IC (Cristales hielo) · PL (Hielo granulado) · GR (Granizo) · GS (Granizo pequeño) · UP (Desconocida)</div></div>
+        <div class="text-block"><span class="info-label">Oscurecimiento</span><div class="info-text">BR (Neblina) · FG (Niebla) · FU (Humo) · VA (Cenizas volcánicas) · DU (Polvo) · SA (Arena) · HZ (Calima)</div></div>
+        <div class="text-block"><span class="info-label">Otros</span><div class="info-text">PO (Remolinos) · SQ (Turbonada) · FC (Tornado/tromba) · SS (Tempestad arena) · DS (Tempestad polvo)</div></div>
+    `);
+    
+    // ========== PÁGINA 8 - Regulaciones y Luces ==========
+    addSection(`
+        <div class="section-title">Importancia de la Meteorología</div>
+        <div class="info-text">Permite planificar rutas seguras, decidir alternos, mejorar conciencia situacional y reducir riesgos operativos.</div>
+        <div class="subsection-title">Regulaciones Aéreas</div>
+        <div class="info-text">Conjunto de normas que garantizan seguridad operacional y armonización internacional. Organismos: OACI, FAA, EASA, y autoridades nacionales (DGAC).</div>
+        <div class="highlight-box">Clasificación de Aeropuertos: Internacionales, Nacionales/Regionales, Aeródromos Locales.<br>Áreas Técnicas: Pistas (RWY), Calles de Rodaje, Rampas, Bermas, Umbral, Orientación Magnética, TDZ.</div>
+        <div class="airport-diagram"><img src="https://i.imgur.com/ZrY63Zd.png" style="max-height: 180px;"></div>
+        <div class="info-text"><strong>Luces de pista:</strong> Blanco (eje), Rojo (fin), Verde (inicio), Azul (calles de rodaje). Colores estandarizados: verde inicio seguro, rojo prohibición, blanco orientación, azul delimitación.</div>
+    `);
+    
+    // ========== PÁGINA 9-11 - METARs con imágenes ==========
+    addSection(`
+        <div class="section-title">Ejemplos de METAR</div>
+        <div class="text-block"><span class="info-label">Fort Zancudo (FZ)</span><img src="https://i.imgur.com/7cOKJm1.png" class="inline-img" style="max-width: 100%; margin: 2mm 0;"><div class="info-text">METAR FZ 261450Z 08015G25KT 5SM TSRA BR BKN030CB 25/20 A2992 RMK MIL EXP BLDU FU<br>Viento 080°15G25, visibilidad 5SM, tormenta con lluvia, neblina, nubes BKN030CB, temp 25/20, presión 29.92. Actividad militar, explosiones, polvo/humo.</div></div>
+        <div class="text-block"><span class="info-label">LSIA (Los Santos Intl)</span><img src="https://i.imgur.com/48GnY50.png" class="inline-img" style="max-width: 100%;"><div class="info-text">METAR LSIA 261500Z VRB03KT 10SM HZ FEW030 28/22 A2995 RMK HZ<br>Viento variable 3KT, visibilidad 10SM, calima, nubes FEW030, temperatura 28/22, presión 29.95.</div></div>
+        <div class="text-block"><span class="info-label">Sandy Shores (SS)</span><img src="https://i.imgur.com/WcFbO5C.png" class="inline-img" style="max-width: 100%;"><div class="info-text">METAR SS 261400Z 35015G25KT 1/2SM DU BKN020 32/18 A2980 RMK BLDU<br>Viento 350°15G25, visibilidad 0.5SM, polvo, nubes BKN020, temp 32/18, polvo levantado.</div></div>
+        <div class="text-block"><span class="info-label">Grapeseed (GP)</span><img src="https://i.imgur.com/XypuU1j.png" class="inline-img" style="max-width: 100%;"><div class="info-text">METAR GP 261430Z 00000KT 5SM -RA BR SCT015 OVC040 18/17 A2990<br>Viento calma, visibilidad 5SM, lluvia leve, neblina, nubes SCT015 OVC040, temp 18/17.</div></div>
+        <div class="text-block"><span class="info-label">Cayo Perico (CP)</span><img src="https://i.imgur.com/QTud5W8.png" class="inline-img" style="max-width: 100%;"><div class="info-text">METAR CP 261200Z 12012KT 10SM SHRA SCT025TCU BKN080 30/25 A2998 RMK ISL<br>Viento 120°12KT, visibilidad 10SM, chubascos lluvia, nubes SCT025TCU BKN080, temp 30/25, isla tropical.</div></div>
+        <div class="text-block"><span class="info-label">USS Independence (USS)</span><img src="https://i.imgur.com/UtLwe9c.png" class="inline-img" style="max-width: 100%;"><div class="info-text">METAR USS 261100Z 18020KT 10SM +SHRA BKN030CB 28/24 A2996 RMK NAVY FC<br>Viento 180°20KT, visibilidad 10SM, chubascos fuertes, nubes BKN030CB, temp 28/24, actividad naval, tromba marina.</div></div>
+        <div class="highlight-box">Estos códigos estandarizan operaciones y evitan confusiones en planes de vuelo y coordinación ATC.</div>
+    `);
+    
+    // ========== PÁGINA 12 - Navegación ==========
+    addSection(`
+        <div class="section-title">Navegación Aeronáutica</div>
+        <div class="info-text">Proceso mediante el cual el piloto determina posición, planifica ruta y mantiene control de la trayectoria.</div>
+        <div class="subsection-title">Rosa de los Vientos</div>
+        <div class="info-text">Representación gráfica de los 360°: Norte (0°), Este (90°), Sur (180°), Oeste (270°), subdividido en NE, SE, SO, NO.</div>
+        <div class="subsection-title">Conceptos básicos: Rumbo, Curso, Trayectoria</div>
+        <div class="info-text">Rumbo: dirección de la nariz. Curso: trayectoria planeada. Trayectoria: línea real sobre terreno.</div>
+        <div class="subsection-title">Cartas de Navegación, Instrumentos y Radioayudas</div>
+        <div class="info-text">VFR / IFR, Brújula, HSI, GPS, DME, ADF, VOR, ILS, NDB. Ejemplo práctico: vuelo Fort Zancudo - Sandy Shores, curso 045°, viento del norte, rumbo corregido 050°.</div>
+    `);
+    
+    // ========== PÁGINA 13 - Radiotelefonía ==========
+    addSection(`
+        <div class="section-title">Procedimientos Radiotelefónicos</div>
+        <div class="info-text">Conjunto de técnicas, frases y normas para comunicación por radio en aviación, garantizando seguridad y eficiencia.</div>
+        <div class="subsection-title">Alfabeto Aeronáutico (OTAN/ICAO)</div>
+        <div class="info-text">Alfa, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, Yankee, Zulu.</div>
+        <div class="highlight-box">Números: cada dígito por separado; 9 = Niner; 3 = Tree; 5 = Fife.</div>
+        <div class="subsection-title">Fraseología estándar</div>
+        <div class="info-text">Wilco, Roger, Affirm, Negative, Stand by, Say again, Cleared for takeoff, Cleared to land, Unable.</div>
+        <div class="text-block"><span class="info-label">Ejemplo de comunicación</span><div class="info-text">Piloto: "Fort Zancudo Torre, Alfa Bravo Charlie Delta listo en cabecera pista principal, autorizado despegue IFR Sandy Shores."<br>Controlador: "Alfa Bravo Charlie Delta, autorizado despegue pista principal, viento 180 grados 08 nudos."<br>Readback: "Autorizado despegue pista principal, viento 180 grados 08 nudos, Alfa Bravo Charlie Delta."</div></div>
+    `);
+    
+    // ========== PÁGINA 14 - Cierre ==========
+    addSection(`
+        <div style="text-align: center; margin-top: 20mm;">
+            <div style="font-size: 48pt; font-family: Oswald; color: #1f6392;">★ ★ ★</div>
+            <p style="font-size: 28pt; font-family: Oswald; margin: 4mm 0 2mm; color: #1f4b6e;">FIN DEL MANUAL</p>
+            <p style="font-size: 14pt; max-width: 140mm; margin: 0 auto; font-style: italic; color: #2c7aa0;">"El conocimiento teórico es la base de un vuelo seguro"</p>
+            <div class="signature-box">
+                <p style="font-family: Oswald; font-size: 15pt; margin-bottom: 3mm;">Alto Mando Aéreo</p>
+                <p style="font-family: Oswald; font-size: 12pt;">General de División</p>
+                <p style="font-size: 8pt;">Comando de Educación y Doctrina Aérea</p>
+            </div>
+            <div class="small-print">Este documento es de uso oficial exclusivo para formación de pilotos.<br>Prohibida su reproducción total o parcial.</div>
+        </div>
+    `);
+    
+    // ============================================
+    // PAGINADO AUTOMÁTICO
+    // ============================================
+    function buildPages() {
+        const container = document.getElementById('manualContainer');
+        container.innerHTML = '';
+        
+        const pageHeightMM = 297; // altura total de página en mm
+        const topMargin = 8; // mm
+        const bottomMargin = 8; // mm
+        const headerHeight = 12; // mm aprox (header + footer espacio)
+        const footerHeight = 10; // mm
+        const availableHeightMM = pageHeightMM - topMargin - bottomMargin - headerHeight - footerHeight;
+        
+        // Convertir mm a píxeles aproximados (1mm ≈ 3.78px a 96dpi)
+        const mmToPx = 3.78;
+        const maxContentHeightPx = availableHeightMM * mmToPx;
+        
+        let currentPage = null;
+        let currentPageContent = null;
+        let currentHeight = 0;
+        let pageCounter = 1;
+        
+        // Función para medir altura de un elemento temporal
+        function measureHeight(html) {
+            const temp = document.createElement('div');
+            temp.style.position = 'absolute';
+            temp.style.visibility = 'hidden';
+            temp.style.width = '190mm'; // ancho de contenido aproximado
+            temp.style.padding = '0';
+            temp.style.margin = '0';
+            temp.style.fontFamily = 'Roboto, sans-serif';
+            temp.innerHTML = html;
+            document.body.appendChild(temp);
+            const height = temp.offsetHeight;
+            document.body.removeChild(temp);
+            return height;
+        }
+        
+        function createNewPage() {
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page';
+            
+            // Header
+            const header = document.createElement('div');
+            header.className = 'page-header';
+            header.innerHTML = `
+                <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce">
+                <span class="header-title">Manual del Piloto · Fuerza Aérea</span>
+                <img src="https://i.imgur.com/GfmYqNX.png" alt="Air Force" class="logo-airforce" style="opacity:0.8;">
+            `;
+            
+            // Content
+            const content = document.createElement('div');
+            content.className = 'page-content';
+            
+            // Footer
+            const footer = document.createElement('div');
+            footer.className = 'page-footer';
+            footer.innerHTML = `
+                <span class="footer-note">Fuerza Aérea · Documento Oficial de Formación</span>
+                <span class="page-number">${pageCounter}</span>
+            `;
+            
+            pageDiv.appendChild(header);
+            pageDiv.appendChild(content);
+            pageDiv.appendChild(footer);
+            
+            container.appendChild(pageDiv);
+            
+            currentPage = pageDiv;
+            currentPageContent = content;
+            currentHeight = 0;
+            pageCounter++;
+            
+            return { pageDiv, contentDiv: content };
+        }
+        
+        function addToPage(html) {
+            if (!currentPage) {
+                createNewPage();
+            }
+            
+            const sectionHeight = measureHeight(html);
+            
+            // Si la sección actual no cabe y ya hay contenido, crear nueva página
+            if (currentHeight + sectionHeight > maxContentHeightPx && currentHeight > 50) {
+                createNewPage();
+            }
+            
+            // Agregar el contenido
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            currentPageContent.appendChild(tempDiv);
+            currentHeight += sectionHeight;
+        }
+        
+        // Procesar todas las secciones
+        for (let i = 0; i < contentSections.length; i++) {
+            const section = contentSections[i];
+            addToPage(section.html);
+            
+            // Si es un salto de página forzado, crear nueva página para la siguiente sección
+            if (section.forcePageBreak && i < contentSections.length - 1) {
+                createNewPage();
+                currentHeight = 0;
+            }
+        }
+    }
+    
+    // ============================================
+    // SEGURIDAD Y BLOQUEOS
+    // ============================================
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's' || e.key === 'P' || e.key === 'p' || e.key === 'C' || e.key === 'c' || e.key === 'X' || e.key === 'x' || e.key === 'V' || e.key === 'v' || e.key === 'A' || e.key === 'a'))) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's' || e.key === 'P' || e.key === 'p' || e.key === 'A' || e.key === 'a'))) {
             e.preventDefault(); return false;
         }
         if (e.key === 'ContextMenu' || e.keyCode === 93) { e.preventDefault(); return false; }
@@ -641,12 +623,20 @@
     document.onselectstart = function() { return false; };
     document.body.addEventListener('copy', function(e) { e.preventDefault(); return false; });
     document.body.addEventListener('cut', function(e) { e.preventDefault(); return false; });
-    const allImages = document.querySelectorAll('img');
-    allImages.forEach(img => {
-        img.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
-        img.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+    
+    // Inicializar paginado después de cargar
+    window.addEventListener('DOMContentLoaded', function() {
+        buildPages();
+        
+        // Bloquear también las imágenes después de generadas
+        const allImages = document.querySelectorAll('img');
+        allImages.forEach(img => {
+            img.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+            img.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+        });
     });
-    console.log('%c🚫 DOCUMENTO CONFIDENCIAL - MANUAL DE PILOTO 🚫', 'color: red; font-size: 14px;');
+    
+    console.log('%c🚫 MANUAL DE PILOTO - DOCUMENTO CONFIDENCIAL 🚫', 'color: red; font-size: 14px;');
 </script>
 </body>
 </html>
